@@ -1,0 +1,41 @@
+version: '3.4'
+
+volumes:
+  db_volume: {}
+
+services:
+  ics.wepapplication:
+    image: ${DOCKER_REGISTRY-}icswepapplication
+    depends_on:
+      - db_postgresql
+    build:
+      context: .
+      dockerfile: ICS.WepApplication/Dockerfile
+      args:
+        - skip_client_build=true
+    environment:
+        DB_CONNECTION_STRING: "Host=db_postgresql;Port=5432;Database=postgres;User ID=postgres;Password=47H8Ms5a;IntegratedSecurity=true;Pooling=true;"
+
+  ics.wepapplication.clientapp:
+    image: ${DOCKER_REGISTRY-}icswepapplicationclientapp
+    build:
+      context: .
+      dockerfile: ICS.WepApplication/ClientApp/Dockerfile
+    ports:
+      - "4200:4200" 
+      - "49153:49153"
+    volumes:
+      - ./ICS.WepApplication/ClientApp:/app
+
+  db_postgresql:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    restart: always
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+      - ./dbscripts/migration_0001.sql :/docker-entrypoint-initdb.d/migration_0001.sql
+    environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: 47H8Ms5a
+        POSTGRES_DB: postgres
