@@ -36,8 +36,9 @@
   -->
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Desktop\Folders\repos\leujo\invitation_service\aspnetcore\InvitationService\ICS.Application.Commands\ICS.Application.Commands.csproj" />
-    <ProjectReference Include="..\..\..\..\Desktop\Folders\repos\leujo\invitation_service\aspnetcore\InvitationService\ICS.Domain\ICS.Domain.csproj" />
+    <ProjectReference Include="..\ICS.Application.Commands\ICS.Application.Commands.csproj" />
+    <ProjectReference Include="..\ICS.Domain\ICS.Domain.csproj" />
+    <ProjectReference Include="..\Shared.Contracts\Shared.Contracts.csproj" />
   </ItemGroup>
 
   <!-- 

@@ -8,6 +8,8 @@ services:
     image: ${DOCKER_REGISTRY-}icswepapplication
     depends_on:
       - db_postgresql
+    ports:
+      - "3333:3333" 
     build:
       context: .
       dockerfile: ICS.WepApplication/Dockerfile
