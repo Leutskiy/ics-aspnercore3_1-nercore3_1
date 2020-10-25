@@ -14,7 +14,7 @@ services:
       context: .
       dockerfile: ICS.WepApplication/Dockerfile
       args:
-        - skip_client_build=true
+        - skip_client_build=false
     environment:
         DB_CONNECTION_STRING: "Host=db_postgresql;Port=5432;Database=postgres;User ID=postgres;Password=47H8Ms5a;IntegratedSecurity=true;Pooling=true;"
 
