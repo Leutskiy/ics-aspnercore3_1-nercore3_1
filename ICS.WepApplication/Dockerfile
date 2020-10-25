@@ -15,9 +15,9 @@ RUN [[ ${skip_client_build} = true ]] && mkdir dist || npm run-script build
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["ICS.WepApplication/ICS.WepApplication.csproj", "ICS.WepApplication/"]
-COPY ["../../../Desktop/Repos/ics-aspnercore3_1-nercore3_1/ICS.Domain/ICS.Domain.csproj", "../../../Desktop/Folders/repos/leujo/invitation_service/aspnetcore/InvitationService/ICS.Domain/"]
-COPY ["../../../Desktop/Repos/ics-aspnercore3_1-nercore3_1/Shared.Contracts/Shared.Contracts.csproj", "../../../Desktop/Folders/repos/leujo/invitation_service/aspnetcore/InvitationService/Shared.Contracts/"]
-COPY ["../../../Desktop/Repos/ics-aspnercore3_1-nercore3_1/ICS.Application.Commands/ICS.Application.Commands.csproj", "../../../Desktop/Folders/repos/leujo/invitation_service/aspnetcore/InvitationService/ICS.Application.Commands/"]
+COPY ["ICS.Domain/ICS.Domain.csproj", "ICS.Domain/"]
+COPY ["Shared.Contracts.csproj", "Shared.Contracts/"]
+COPY ["ICS.Application.Commands.csproj", "ICS.Application.Commands/"]
 RUN dotnet restore "ICS.WepApplication/ICS.WepApplication.csproj"
 COPY . .
 WORKDIR "/src/ICS.WepApplication"
