@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ics-app": {
+    "ICS.WebApplication": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/ics-app",
+            "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -66,18 +66,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ics-app:build"
+            "browserTarget": "ICS.WepApplication:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ics-app:build:production"
+              "browserTarget": "ICS.WepApplication:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ics-app:build"
+            "browserTarget": "ICS.WepApplication:build"
           }
         },
         "test": {
@@ -114,19 +114,42 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "ics-app:serve"
+            "devServerTarget": "ICS.WepApplication:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "ics-app:serve:production"
+              "devServerTarget": "ICS.WepApplication:serve:production"
+            }
+          }
+        },
+		"server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist-server",
+            "main": "src/main.ts",
+            "tsConfig": "src/tsconfig.server.json"
+          },
+          "configurations": {
+            "dev": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": true
+            },
+            "production": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false
             }
           }
         }
       }
     }
   },
-  "defaultProject": "ics-app",
-  "cli": {
-    "analytics": "095f3938-a710-4503-860a-4ca5712e9c25"
-  }
+  "defaultProject": "ICS.WepApplication"
 }
