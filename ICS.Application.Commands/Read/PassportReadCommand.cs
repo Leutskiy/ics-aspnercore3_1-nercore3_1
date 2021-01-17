@@ -1,5 +1,4 @@
 ﻿using ICS.Domain.Data.Repositories.Contracts;
-using ICS.Shared;
 using ICS.WebApplication.Commands.Converters;
 using ICS.WebApplication.Commands.Read.Contracts;
 using ICS.WebApplication.Commands.Read.Results;
@@ -18,8 +17,6 @@ namespace ICS.WebApplication.Commands.Read
 
         public PassportReadCommand(IPassportRepository passportRepository)
         {
-            Contract.Argument.IsNotNull(passportRepository, nameof(passportRepository));
-
             _passportRepository = passportRepository;
         }
 
@@ -30,9 +27,7 @@ namespace ICS.WebApplication.Commands.Read
         /// <returns>Информация о паспорте</returns>
         public async Task<PassportResult> ExecuteAsync(Guid passportId)
         {
-            Contract.Argument.IsNotEmptyGuid(passportId, nameof(passportId));
-
-            var passport = await _passportRepository.GetAsync(passportId).ConfigureAwait(false);
+            var passport = await _passportRepository.GetAsync(passportId);
 
             return DomainEntityConverter.ConvertToResult(passport: passport);
         }

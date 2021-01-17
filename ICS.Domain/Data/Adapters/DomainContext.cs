@@ -1,4 +1,5 @@
 ﻿using ICS.Domain.Configurations;
+using ICS.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ICS.Domain.Data.Adapters
@@ -8,6 +9,26 @@ namespace ICS.Domain.Data.Adapters
     /// </summary>
     public sealed class DomainContext : DbContext
     {
+		public DbSet<Alien> Aliens { get; set; }
+
+		public DbSet<Contact> Contacts { get; set; }
+
+		public DbSet<Document> Documents { get; set; }
+
+		public DbSet<Employee> Employees { get; set; }
+
+		public DbSet<Passport> Passports { get; set; }
+
+		public DbSet<Invitation> Invitations { get; set; }
+
+		public DbSet<Organization> Organizations { get; set; }
+
+		public DbSet<VisitDetail> VisitDetails { get; set; }
+
+		public DbSet<StateRegistration> StateRegistrations { get; set; }
+
+		public DbSet<ForeignParticipant> ForeignParticipants { get; set; }
+
         /// <summary>
         /// Конструктор контекста домена
         /// </summary>
@@ -15,22 +36,13 @@ namespace ICS.Domain.Data.Adapters
         public DomainContext(DbContextOptions<DomainContext> options)
             : base(options)
         {
-            /*
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(nameOrConnectionString, nameof(nameOrConnectionString));
-            ConnectionStringName = nameOrConnectionString;
-            */
-
             SchemaName = Constants.Schemes.Domain;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseLazyLoadingProxies(true);
-
             base.OnConfiguring(optionsBuilder);
         }
-
-        /*protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseNpgsql(ConnectionStringName);*/
 
         /// <summary>
         /// Наименование схемы
@@ -48,9 +60,8 @@ namespace ICS.Domain.Data.Adapters
         /// <param name="modelBuilder">Построитель модели</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
             RegisterDomainModels(modelBuilder);
+            base.OnModelCreating(modelBuilder);
         }
 
         /// <summary>

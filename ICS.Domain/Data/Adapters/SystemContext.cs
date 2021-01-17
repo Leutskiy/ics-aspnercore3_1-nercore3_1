@@ -1,14 +1,19 @@
 ﻿using ICS.Domain.Configurations;
-using ICS.Shared;
+using ICS.Domain.Entities.System;
 using Microsoft.EntityFrameworkCore;
 
 namespace ICS.Domain.Data.Adapters
 {
-    /// <summary>
-    /// Контекст системы
-    /// </summary>
-    public sealed class SystemContext : DbContext
+	/// <summary>
+	/// Контекст системы
+	/// </summary>
+	public class SystemContext : DbContext
     {
+		public DbSet<Profile> Profiles { get; set; }
+
+		public DbSet<User> Users { get; set; }
+
+
         /// <summary>
         /// Конструктор контекста системы
         /// </summary>
@@ -16,17 +21,11 @@ namespace ICS.Domain.Data.Adapters
         public SystemContext(DbContextOptions<SystemContext> options)
             : base(options)
         {
-            /*Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(nameOrConnectionString, nameof(nameOrConnectionString));*/
-
             SchemaName = Constants.Schemes.System;
         }
 
-        /*protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseNpgsql(ConnectionStringName);*/
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseLazyLoadingProxies(true);
-
             base.OnConfiguring(optionsBuilder);
         }
 
@@ -46,9 +45,9 @@ namespace ICS.Domain.Data.Adapters
         /// <param name="modelBuilder">Построитель модели</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
             RegisterDomainModels(modelBuilder);
+
+            base.OnModelCreating(modelBuilder);
         }
 
         /// <summary>

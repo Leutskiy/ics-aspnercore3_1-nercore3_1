@@ -1,8 +1,6 @@
-﻿using ICS.Domain.Data.Repositories.Contracts;
-using ICS.Domain.Models;
+﻿using ICS.Domain.Models;
 using ICS.Shared;
 using ICS.WebApplication.Commands.Read;
-using ICS.WebApplication.Commands.Read.Contracts;
 using ICS.WebApplication.Commands.Read.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,55 +9,89 @@ using System.Threading.Tasks;
 
 namespace ICS.WebApp.Controllers
 {
-    /// <summary>
-    /// Контроллер информации по сотруднику
-    /// </summary>
-    [ApiController]
+	/// <summary>
+	/// Контроллер информации по сотруднику
+	/// </summary>
+	[ApiController]
     [Authorize]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/employee")]
     public class EmployeeController : ControllerBase
     {
-        private readonly IEmployeeRepository _employeeRepository;
         private readonly EmployeeWriteCommand _employeeWriteCommand;
-        private readonly IReadCommand<EmployeeResult> _employeeReadCommand;
+        private readonly EmployeeReadCommand _employeeReadCommand;
 
         public EmployeeController(
-            IEmployeeRepository employeeRepository,
             EmployeeWriteCommand employeeWriteCommand,
-            IReadCommand<EmployeeResult> employeeReadCommand)
+            EmployeeReadCommand employeeReadCommand)
         {
-            Contract.Argument.IsNotNull(employeeRepository, nameof(employeeRepository));
             Contract.Argument.IsNotNull(employeeWriteCommand, nameof(employeeWriteCommand));
             Contract.Argument.IsNotNull(employeeReadCommand, nameof(employeeReadCommand));
 
-            _employeeRepository = employeeRepository;
             _employeeWriteCommand = employeeWriteCommand;
             _employeeReadCommand = employeeReadCommand;
         }
 
         [HttpGet]
         [Route("{employeeId:guid}")]
-        public async Task<EmployeeResult> GetAsync(Guid employeeId)
+        public Task<EmployeeResult> GetAsync(Guid employeeId)
         {
-            return await _employeeReadCommand.ExecuteAsync(employeeId).ConfigureAwait(false);
+            Contract.Argument.IsNotEmptyGuid(employeeId, nameof(employeeId));
+
+            return _employeeReadCommand.ExecuteAsync(employeeId);
         }
 
-        [HttpPost]
-        [Route("{employeeId:guid}/scientific")]
-        public async Task UpdateScientificInfoAsync(Guid employeeId, ScientificInfoDto scientificInfo)
-        {
-            Contract.Argument.IsNotNull(scientificInfo, nameof(scientificInfo));
-
-            await _employeeWriteCommand.UpdateEmployeeScientificInfoAsync(employeeId, scientificInfo).ConfigureAwait(false);
-        }
-
-        [HttpPost]
+        [HttpPut]
         [Route("{employeeId:guid}/job")]
         public async Task UpdateJobAsync(Guid employeeId, JobDto jobData)
         {
-            Contract.Argument.IsNotNull(jobData, nameof(jobData));
+            Contract.Argument.IsNotEmptyGuid(employeeId, nameof(employeeId));
 
-            await _employeeWriteCommand.UpdateEmployeeJobAsync(employeeId, jobData).ConfigureAwait(false);
+            await _employeeWriteCommand.UpdateEmployeeJobAsync(employeeId, jobData);
+        }
+
+        [HttpPut]
+        [Route("{employeeId:guid}/contact")]
+        public Task<Guid> UpdateContactAsync(Guid employeeId, ContactDto contactDto)
+        {
+            Contract.Argument.IsNotEmptyGuid(employeeId, nameof(employeeId));
+
+            return _employeeWriteCommand.AddOrUpdateContactAsync(employeeId, contactDto);
+        }
+
+        [HttpPut]
+        [Route("{employeeId:guid}/passport")]
+        public Task<Guid> UpdatePassportAsync(Guid employeeId, PassportDto passportDto)
+        {
+            Contract.Argument.IsNotEmptyGuid(employeeId, nameof(employeeId));
+
+            return _employeeWriteCommand.AddOrUpdatePassportAsync(employeeId, passportDto);
+        }
+
+        [HttpPut]
+        [Route("{employeeId:guid}/organization")]
+        public Task<Guid> UpdateOrganizationAsync(Guid employeeId, OrganizationDto organizationDto)
+        {
+            Contract.Argument.IsNotEmptyGuid(employeeId, nameof(employeeId));
+
+            return _employeeWriteCommand.AddOrUpdateOrganizationAsync(employeeId, organizationDto);
+        }
+
+        [HttpPut]
+        [Route("{employeeId:guid}/scientificinfo")]
+        public Task UpdateScientificInfoAsync(Guid employeeId, ScientificInfoDto scientificInfo)
+        {
+            Contract.Argument.IsNotEmptyGuid(employeeId, nameof(employeeId));
+
+            return _employeeWriteCommand.UpdateEmployeeScientificInfoAsync(employeeId, scientificInfo);
+        }
+
+        [HttpPut]
+        [Route("{employeeId:guid}/stateregistration")]
+        public Task<Guid> UpdateStateRegistrationAsync(Guid employeeId, StateRegistrationDto stateRegistrationDto)
+        {
+            Contract.Argument.IsNotEmptyGuid(employeeId, nameof(employeeId));
+
+            return _employeeWriteCommand.AddOrUpdateStateRegistrationAsync(employeeId, stateRegistrationDto);
         }
     }
 }

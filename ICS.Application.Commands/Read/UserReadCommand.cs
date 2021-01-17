@@ -1,35 +1,29 @@
 ﻿using ICS.Domain.Data.Repositories.Contracts;
-using ICS.Shared;
 using System;
 using System.Threading.Tasks;
 
 namespace ICS.WebApplication.Commands.Read
 {
-    /// <summary>
-    /// Команда для чтения пользовательских данных
-    /// </summary>
-    public sealed class UserReadCommand
+	/// <summary>
+	/// Команда для чтения пользовательских данных
+	/// </summary>
+	public sealed class UserReadCommand
     {
         private readonly IUserRepository _userRepository;
 
-        public UserReadCommand(
-            IUserRepository userRepository)
+        public UserReadCommand(IUserRepository userRepository)
         {
-            Contract.Argument.IsNotNull(userRepository, nameof(userRepository));
-
             _userRepository = userRepository;
         }
 
         /// <summary>
-        /// Получить идентификатор сотрудника
+        /// Получить Идентификатор иностранца
         /// </summary>
         /// <param name="userId">Идентификатор пользователя</param>
-        /// <returns>Идентификатор сотрудника</returns>
-        public async Task<Guid> GetEmployeeIdAsync(Guid userId)
+        /// <returns>Идентификатор иностранца</returns>
+        public Task<Guid> GetEmployeeIdAsync(Guid userId)
         {
-            Contract.Argument.IsNotEmptyGuid(userId, nameof(userId));
-
-            return await _userRepository.GetEmployeeId(userId).ConfigureAwait(false);
+            return _userRepository.GetEmployeeId(userId);
         }
     }
 }

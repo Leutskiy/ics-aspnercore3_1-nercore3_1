@@ -44,8 +44,8 @@ namespace ICS.WebApp.Controllers
 
             var userId = Guid.Parse(identityClaims.FindFirst("UserId").Value);
 
-            var profileId = await _userRepository.GetProfileId(userId).ConfigureAwait(false);
-            var employeeId = await _userRepository.GetEmployeeId(userId).ConfigureAwait(false);
+            var profileId = await _userRepository.GetProfileId(userId);
+            var employeeId = await _userRepository.GetEmployeeId(userId);
 
             var model = new AccountDetailsDto()
             {
@@ -67,15 +67,13 @@ namespace ICS.WebApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            var newUser = _userRepository.Create(model.UserName, model.Password);
-            //_systemContext.SaveChanges();
-
+            var newProfile = _profileRepository.Create();
+            var newUser = _userRepository.Create(model.UserName, model.Password, newProfile);
+            
             _employeeRepository.Create(newUser.Id);
-            var newProfile = await _profileRepository.CreateAsync(newUser).ConfigureAwait(false);
-            newUser.SetProfile(newProfile);
 
-            _systemContext.SaveChanges();
-            _domainContext.SaveChanges();
+            await _systemContext.SaveChangesAsync();
+            await _domainContext.SaveChangesAsync();
 
             return Ok();
         }

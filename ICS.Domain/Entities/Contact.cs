@@ -5,77 +5,42 @@ namespace ICS.Domain.Entities
     /// <summary>
     /// Контакт
     /// </summary>
-    public class Contact
+    public sealed class Contact
     {
-        protected Contact()
-        {
-        }
+		public Contact()
+		{
+            Id = Guid.NewGuid();
+		}
 
         /// <summary>
         /// Идентификатор
         /// </summary>
-        public virtual Guid Id { get; protected set; }
+        public Guid Id { get; private set; }
 
         /// <summary>
         /// Электронная почта
         /// </summary>
-        public virtual string Email { get; protected set; }
+        public string? Email { get; private set; }
 
         /// <summary>
         /// Индекс
         /// </summary>
-        public virtual string Postcode { get; protected set; }
+        public string? Postcode { get; private set; }
 
         /// <summary>
         /// Домашний номер телефона
         /// </summary>
-        public virtual string HomePhoneNumber { get; protected set; }
+        public string? HomePhoneNumber { get; private set; }
 
         /// <summary>
         /// Рабочий номер телефона
         /// </summary>
-        public virtual string WorkPhoneNumber { get; protected set; }
+        public string? WorkPhoneNumber { get; private set; }
 
         /// <summary>
         /// Мобильный номер телефона
         /// </summary>
-        public virtual string MobilePhoneNumber { get; protected set; }
-
-        /// <summary>
-        /// Инициализировать контактные данные
-        /// </summary>
-        /// <param name="id">Идентификатор</param>
-        /// <param name="email">Электронная почта</param>
-        /// <param name="postcode">Почтовый индекс</param>
-        /// <param name="homePhoneNumber">Домашний номер телефона</param>
-        /// <param name="workPhoneNumber">Рабочий номер телефона</param>
-        /// <param name="mobilePhoneNumber">Мобильный номер телефона</param>
-        internal void Initialize(
-            Guid id,
-            string email,
-            string postcode,
-            string homePhoneNumber,
-            string workPhoneNumber,
-            string mobilePhoneNumber)
-        {
-            /*
-            Contract.Argument.IsValidIf(Id != id, $"{Id} (current) != {id} (new)");
-            Contract.Argument.IsNotEmptyGuid(id, nameof(id));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(email, nameof(email));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(postcode, nameof(postcode));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(homePhoneNumber, nameof(homePhoneNumber));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(workPhoneNumber, nameof(workPhoneNumber));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(mobilePhoneNumber, nameof(mobilePhoneNumber));
-            */
-
-            Id = id;
-
-            SetEmail(email);
-            SetPostcode(postcode);
-            SetHomePhoneNumber(homePhoneNumber);
-            SetWorkPhoneNumber(workPhoneNumber);
-            SetMobilePhoneNumber(mobilePhoneNumber);
-        }
+        public string? MobilePhoneNumber { get; private set; }
 
         /// <summary>
         /// Задать электронную почту
@@ -83,8 +48,6 @@ namespace ICS.Domain.Entities
         /// <param name="email">Электронная почта</param>
         public void SetEmail(string email)
         {
-            /*Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(email, nameof(email));*/
-
             if (Email == email)
             {
                 return;
@@ -99,8 +62,6 @@ namespace ICS.Domain.Entities
         /// <param name="postcode">Почтовый индекс</param>
         public void SetPostcode(string postcode)
         {
-            /*Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(postcode, nameof(postcode));*/
-
             if (Postcode == postcode)
             {
                 return;
@@ -115,8 +76,6 @@ namespace ICS.Domain.Entities
         /// <param name="workPhoneNumber">Рабочий номер телефона</param>
         public void SetWorkPhoneNumber(string workPhoneNumber)
         {
-            /*Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(workPhoneNumber, nameof(workPhoneNumber));*/
-
             if (WorkPhoneNumber == workPhoneNumber)
             {
                 return;
@@ -131,8 +90,6 @@ namespace ICS.Domain.Entities
         /// <param name="homePhoneNumber">Домашний телефонный номер</param>
         public void SetHomePhoneNumber(string homePhoneNumber)
         {
-            /*Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(homePhoneNumber, nameof(homePhoneNumber));*/
-
             if (HomePhoneNumber == homePhoneNumber)
             {
                 return;
@@ -147,44 +104,12 @@ namespace ICS.Domain.Entities
         /// <param name="mobilePhoneNumber">Мобильный номер телефона</param>
         public void SetMobilePhoneNumber(string mobilePhoneNumber)
         {
-            /*Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(mobilePhoneNumber, nameof(mobilePhoneNumber));*/
-
             if (MobilePhoneNumber == mobilePhoneNumber)
             {
                 return;
             }
 
             MobilePhoneNumber = mobilePhoneNumber;
-        }
-
-        /// <summary>
-        /// Полностью обновить контакт
-        /// </summary>
-        /// <param name="email">Электронная почта</param>
-        /// <param name="postcode">Почтовый индекс</param>
-        /// <param name="homePhoneNumber">Домашний номер телефона</param>
-        /// <param name="workPhoneNumber">Рабочий номер телефона</param>
-        /// <param name="mobilePhoneNumber">Мобильный номер телефона</param>
-        public void Update(
-            string email,
-            string postcode,
-            string homePhoneNumber,
-            string workPhoneNumber,
-            string mobilePhoneNumber)
-        {
-            /*
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(email, nameof(email));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(postcode, nameof(postcode));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(homePhoneNumber, nameof(homePhoneNumber));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(workPhoneNumber, nameof(workPhoneNumber));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(mobilePhoneNumber, nameof(mobilePhoneNumber));
-            */
-
-            SetEmail(email);
-            SetPostcode(postcode);
-            SetHomePhoneNumber(homePhoneNumber);
-            SetWorkPhoneNumber(workPhoneNumber);
-            SetMobilePhoneNumber(mobilePhoneNumber);
         }
     }
 }

@@ -1,9 +1,8 @@
-﻿using ICS.Domain.Entities.System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace ICS.WebAppCore
 {
-    public interface IUserService
+	public interface IUserService
     {
         bool IsAnExistingUser(string userName);
         Task<bool> IsValidUserCredentialsAsync(string userName, string password);

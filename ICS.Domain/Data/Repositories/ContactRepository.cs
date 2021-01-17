@@ -2,8 +2,6 @@
 using ICS.Domain.Data.Repositories.Contracts;
 using ICS.Domain.Entities;
 using ICS.Domain.Models;
-using ICS.Domain.Services.Contracts;
-using ICS.Shared;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,19 +9,15 @@ using System.Threading.Tasks;
 
 namespace ICS.Domain.Data.Repositories
 {
-    /// <summary>
-    /// Репозиторий контактов
-    /// </summary>
-    public sealed class ContactRepository : IContactRepository
+	/// <summary>
+	/// Репозиторий контактов
+	/// </summary>
+	public sealed class ContactRepository : IContactRepository
     {
-        private readonly IIdGenerator _idGenerator;
         private readonly DomainContext _domainContext;
 
-        public ContactRepository(
-            IIdGenerator idGenerator,
-            DomainContext databaseContext)
+        public ContactRepository(DomainContext databaseContext)
         {
-            _idGenerator = idGenerator ?? throw new ArgumentNullException(nameof(idGenerator));
             _domainContext = databaseContext ?? throw new ArgumentNullException(nameof(databaseContext));
         }
 
@@ -31,11 +25,9 @@ namespace ICS.Domain.Data.Repositories
         /// Получить все контакты
         /// </summary>
         /// <returns>Контакты</returns>
-        public async Task<IEnumerable<Contact>> GetAllAsync()
+        public Task<List<Contact>> GetAllAsync()
         {
-            var contacts = await _domainContext.Set<Contact>().ToArrayAsync().ConfigureAwait(false);
-
-            return contacts;
+            return _domainContext.Set<Contact>().ToListAsync();
         }
 
         /// <summary>
@@ -45,10 +37,7 @@ namespace ICS.Domain.Data.Repositories
         /// <returns>Контакт</returns>
         public async Task<Contact> GetAsync(Guid id)
         {
-            Contract.Argument.IsNotEmptyGuid(id, nameof(id));
-
-            var contact = await _domainContext.Set<Contact>().FindAsync(id).ConfigureAwait(false);
-
+            var contact = await _domainContext.Set<Contact>().FindAsync(id);
             if (contact == null)
             {
                 throw new Exception($"Сущность не найдена для id: {id}");
@@ -60,56 +49,42 @@ namespace ICS.Domain.Data.Repositories
         /// <summary>
         /// Создать контакт
         /// </summary>
-        /// <param name="email">Электронный адрес</param>
-        /// <param name="postcode">Почтовый индекс</param>
-        /// <param name="homePhoneNumber">Домашний номер телефона</param>
-        /// <param name="workPhoneNumber">Рабочий номер телефона</param>
-        /// <param name="mobilePhoneNumber">Мобильный номер телефона</param>
         /// <returns></returns>
-        public Contact Create(
-            string email,
-            string postcode,
-            string homePhoneNumber,
-            string workPhoneNumber,
-            string mobilePhoneNumber)
+        public Contact Create()
         {
-            /*
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(email, nameof(email));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(postcode, nameof(postcode));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(homePhoneNumber, nameof(homePhoneNumber));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(workPhoneNumber, nameof(workPhoneNumber));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(mobilePhoneNumber, nameof(mobilePhoneNumber));
-            */
+            var createdContact = new Contact();
 
-            var createdContact = _domainContext.Set<Contact>().CreateProxy();
+            _domainContext.Set<Contact>().Add(createdContact);
 
-            var id = _idGenerator.Generate();
-            createdContact.Initialize(
-                id: id,
-                email: email,
-                postcode: postcode,
-                homePhoneNumber: homePhoneNumber,
-                workPhoneNumber: workPhoneNumber,
-                mobilePhoneNumber: mobilePhoneNumber);
+            return createdContact;
+        }
 
-            var newContact = _domainContext.Set<Contact>().Add(createdContact);
+        /// <summary>
+        /// Добавить контакт
+        /// </summary>
+        /// <param name="addedContact">Добавляемый контакт</param>
+        /// <returns>Контакт</returns>
+        public Contact Add(ContactDto addedContact)
+        {
+            var contact = Create();
 
-            return newContact.Entity;
+            contact.SetEmail(addedContact.Email);
+            contact.SetPostcode(addedContact.Postcode);
+            contact.SetHomePhoneNumber(addedContact.HomePhoneNumber);
+            contact.SetWorkPhoneNumber(addedContact.WorkPhoneNumber);
+            contact.SetMobilePhoneNumber(addedContact.MobilePhoneNumber);
+
+            return contact;
         }
 
         public async Task UpdateAsync(Guid currentContcatId, ContactDto newContact)
         {
-            Contract.Argument.IsNotEmptyGuid(currentContcatId, nameof(currentContcatId));
-            Contract.Argument.IsNotNull(newContact, nameof(newContact));
-
-            var currentContact = await GetAsync(currentContcatId).ConfigureAwait(false);
-
-            currentContact.Update(
-                email: newContact.Email,
-                postcode: newContact.Postcode,
-                homePhoneNumber: newContact.HomePhoneNumber,
-                workPhoneNumber: newContact.WorkPhoneNumber,
-                mobilePhoneNumber: newContact.MobilePhoneNumber);
+            var currentContact = await GetAsync(currentContcatId);
+            currentContact.SetEmail(newContact.Email);
+            currentContact.SetPostcode(newContact.Postcode);
+            currentContact.SetHomePhoneNumber(newContact.HomePhoneNumber);
+            currentContact.SetWorkPhoneNumber(newContact.WorkPhoneNumber);
+            currentContact.SetMobilePhoneNumber(newContact.MobilePhoneNumber);
         }
 
         /// <summary>
@@ -119,9 +94,7 @@ namespace ICS.Domain.Data.Repositories
         /// <returns></returns>
         public async Task DeleteAsync(Guid id)
         {
-            Contract.Argument.IsNotEmptyGuid(id, nameof(id));
-
-            var deletedContact = await GetAsync(id).ConfigureAwait(false);
+            var deletedContact = await GetAsync(id);
 
             _domainContext.Set<Contact>().Remove(deletedContact);
         }

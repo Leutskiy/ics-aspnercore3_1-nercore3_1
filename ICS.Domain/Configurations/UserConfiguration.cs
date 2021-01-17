@@ -23,11 +23,15 @@ namespace ICS.Domain.Configurations
 
             builder.Property(user => user.Id).HasColumnName("Uid").ValueGeneratedNever();
 
-            builder.Property(user => user.AccountName).HasColumnName("Account");
+            builder.Property(user => user.Account).HasColumnName("Account");
             builder.Property(user => user.Password).HasColumnName("Password");
-            builder.Property(user => user.ProfileId).HasColumnName("ProfileUid").IsRequired(false);
+            builder.Property(user => user.ProfileId).HasColumnName("ProfileUid");
 
-            builder.HasOne(user => user.Profile).WithOne(profile => profile.User).OnDelete(DeleteBehavior.Cascade);
+            builder
+                .HasOne(user => user.Profile)
+                .WithOne()
+                .HasForeignKey<User>(user => user.ProfileId)
+                .HasPrincipalKey<Profile>(profile => profile.Id);
         }
     }
 }

@@ -15,46 +15,46 @@ namespace ICS.Domain.Models
         /// <summary>
         /// DTO контактных данных
         /// </summary>
-        public ContactDto Contact { get; set; }
+        public ContactDto? Contact { get; set; }
 
         /// <summary>
         /// DTO паспортных данных
         /// </summary>
-        public PassportDto Passport { get; set; }
+        public PassportDto? Passport { get; set; }
 
         /// <summary>
         /// DTO организации
         /// </summary>
-        public OrganizationDto Organization { get; set; }
+        public OrganizationDto? Organization { get; set; }
 
         /// <summary>
         /// DTO государственной регистрации
         /// </summary>
-        public StateRegistrationDto StateRegistration { get; set; }
+        public StateRegistrationDto? StateRegistration { get; set; }
 
         /// <summary>
         /// Научное звание
         /// </summary>
-        public string AcademicRank { get; set; }
+        public string? AcademicRank { get; set; }
 
         /// <summary>
         /// Научная степень
         /// </summary>
-        public string AcademicDegree { get; set; }
+        public string? AcademicDegree { get; set; }
 
         /// <summary>
         /// Образование
         /// </summary>
-        public string Education { get; set; }
+        public string? Education { get; set; }
 
         /// <summary>
         /// Место работы
         /// </summary>
-        public string WorkPlace { get; set; }
+        public string? WorkPlace { get; set; }
 
         /// <summary>
         /// Должность
         /// </summary>
-        public string Position { get; set; }
+        public string? Position { get; set; }
     }
 }

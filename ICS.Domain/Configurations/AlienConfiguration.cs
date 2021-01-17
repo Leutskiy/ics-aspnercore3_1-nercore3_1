@@ -23,15 +23,38 @@ namespace ICS.Domain.Configurations
 
             builder.Property(alien => alien.Id).HasColumnName("AlienUid").ValueGeneratedNever();
 
-            builder.Property(alien => alien.InvitationId).HasColumnName("InvitationUid");
             builder.Property(alien => alien.ContactId).HasColumnName("ContactUid");
-            builder.Property(alien => alien.PassportId).HasColumnName("PassportUid");
-            builder.Property(alien => alien.OrganizationId).HasColumnName("OrganizationUid");
-            builder.Property(alien => alien.StateRegistrationId).HasColumnName("StateRegistrationUid");
-            builder.Property(alien => alien.Position).HasColumnName("Position");
-            builder.Property(alien => alien.WorkPlace).HasColumnName("WorkPlace");
-            builder.Property(alien => alien.WorkAddress).HasColumnName("WorkAddress");
-            builder.Property(alien => alien.StayAddress).HasColumnName("StayAddress");
+            builder.Property(alien => alien.PassportId).IsRequired(false).HasColumnName("PassportUid");
+            builder.Property(alien => alien.OrganizationId).IsRequired(false).HasColumnName("OrganizationUid");
+            builder.Property(alien => alien.StateRegistrationId).IsRequired(false).HasColumnName("StateRegistrationUid");
+            builder.Property(alien => alien.Position).IsRequired(false).HasColumnName("Position");
+            builder.Property(alien => alien.WorkPlace).IsRequired(false).HasColumnName("WorkPlace");
+            builder.Property(alien => alien.WorkAddress).IsRequired(false).HasColumnName("WorkAddress");
+            builder.Property(alien => alien.StayAddress).IsRequired(false).HasColumnName("StayAddress");
+
+            builder
+                .HasOne(alien => alien.Contact)
+                .WithOne()
+                .HasForeignKey<Alien>(alien => alien.ContactId)
+                .HasPrincipalKey<Contact>(contact => contact.Id);
+
+            builder
+                .HasOne(alien => alien.Passport)
+                .WithOne()
+                .HasForeignKey<Alien>(alien => alien.PassportId)
+                .HasPrincipalKey<Passport>(passport => passport.Id);
+
+            builder
+                .HasOne(alien => alien.Organization)
+                .WithOne()
+                .HasForeignKey<Alien>(alien => alien.OrganizationId)
+                .HasPrincipalKey<Organization>(organization => organization.Id);
+
+            builder
+                .HasOne(alien => alien.StateRegistration)
+                .WithOne()
+                .HasForeignKey<Alien>(alien => alien.StateRegistrationId)
+                .HasPrincipalKey<StateRegistration>(stateRegistration => stateRegistration.Id);
         }
     }
 }

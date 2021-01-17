@@ -1,60 +1,62 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Passport, Gender } from '../../contracts/login-data';
-import { PassportDataService } from '../../services/component-providers/passport/passport-data.service';
+import { OnInit, Input } from '@angular/core';
+import { Passport } from '../../contracts/login-data';
 
-@Component({
-  selector: 'app-passport',
-  templateUrl: './passport.component.html',
-  styleUrls: ['./passport.component.scss'],
-  providers: [PassportDataService]
-})
+// базовый класс для компонент, представляющих паспорт
 export class PassportComponent implements OnInit {
 
+  @Input() scope: string;
   @Input() title: string;
   @Input() passport: Passport;
 
-  editable: boolean;
-  viewMode: boolean;
+  public isNew: boolean = false;
+  public editable: boolean = false;
+  public viewMode: boolean = false;
 
-  constructor(
-    private passportDataService: PassportDataService) {
-      this.passport = new Passport();
+  constructor() {
+    this.passport = new Passport();
   }
 
+  // TODO: переделать определения того, что форма заполнения приглашения с нуля
   ngOnInit(): void {
-    this.viewMode = false;
-    this.editable = false;
+    this.isNew = this.scope === "invitation";
   }
 
-  editDetails() {
+  public openForm() {
+    this.viewMode = !this.viewMode;
+
+    if (!this.viewMode) {
+      this.reset();
+    }
+  }
+
+  public editForm() {
     this.editable = !this.editable;
   }
 
-  saveDetails() {
+  public saveForm() {
     this.editable = !this.editable;
 
-    this.passport.birthDate = this.formatterToModel(this.passport.birthDate);
-    this.passport.issueDate = this.formatterToModel(this.passport.issueDate);
+    this.passport.birthDate = this.formatDate(this.passport.birthDate);
+    this.passport.issueDate = this.formatDate(this.passport.issueDate);
 
-    this.passportDataService.setDataById(this.passport, this.passport.id).subscribe(
-      addedPassportId => {
-        console.log(addedPassportId);
-      },
-      error => {
-        console.log(error);
-      }
-    );
+    this.CompleteSaveOperation()
   }
 
-  formatterToModel(model: Date | string | null): Date | null {
+  public clearGender(): void {
+    this.passport.gender = null;
+  }
+
+  protected CompleteSaveOperation(): void { };
+
+  // TODO: Сделать стандартизацию формата даты (подходящий ISO)
+  // отформатировать дату (привести к правильному формату)
+  private formatDate(model: Date | string | null): Date | null {
     if (model instanceof Date) {
       return model;
-
     }
     else if (model) {
       return new Date(this.parse(model));
-    }
-    else {
+    } else {
       return null;
     }
   }
@@ -64,20 +66,8 @@ export class PassportComponent implements OnInit {
       let date = value.split(".");
       return date[2] + "-" + date[1] + "-" + date[0];
     }
+
     return null;
-  }
-
-  viewDetails() {
-    this.viewMode = !this.viewMode;
-
-    if (!this.viewMode) {
-      this.reset();
-    }
-  }
-
-  clearGender(): void {
-    console.log(this.passport.gender);
-    this.passport.gender = null;
   }
 
   private reset() {

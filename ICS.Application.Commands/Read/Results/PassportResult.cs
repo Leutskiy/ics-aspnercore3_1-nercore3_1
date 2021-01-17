@@ -17,77 +17,77 @@ namespace ICS.WebApplication.Commands.Read.Results
         /// <summary>
         /// Имя (по-русски)
         /// </summary>
-        public string NameRus { get; set; }
+        public string? NameRus { get; set; }
 
         /// <summary>
         /// Имя (по-английски)
         /// </summary>
-        public string NameEng { get; set; }
+        public string? NameEng { get; set; }
 
         /// <summary>
         /// Фамилия (по-русски)
         /// </summary>
-        public string SurnameRus { get; set; }
+        public string? SurnameRus { get; set; }
 
         /// <summary>
         /// Фамилия (по-английски)
         /// </summary>
-        public string SurnameEng { get; set; }
+        public string? SurnameEng { get; set; }
 
         /// <summary>
         /// Отчество (по-русски)
         /// </summary>
-        public string PatronymicNameRus { get; set; }
+        public string? PatronymicNameRus { get; set; }
 
         /// <summary>
         /// Отчество (по-ангийски)
         /// </summary>
-        public string PatronymicNameEng { get; set; }
+        public string? PatronymicNameEng { get; set; }
 
         /// <summary>
         /// Место рождения
         /// </summary>
-        public string BirthPlace { get; set; }
+        public string? BirthPlace { get; set; }
 
         /// <summary>
         /// Страна рождения
         /// </summary>
-        public string BirthCountry { get; set; }
+        public string? BirthCountry { get; set; }
 
         /// <summary>
         /// Гражданство (подданство)
         /// </summary>
-        public string Citizenship { get; set; }
+        public string? Citizenship { get; set; }
 
         /// <summary>
         /// Местожительство
         /// </summary>
-        public string Residence { get; set; }
+        public string? Residence { get; set; }
 
         /// <summary>
         /// Страна постоянного проживания
         /// </summary>
-        public string ResidenceCountry { get; set; }
+        public string? ResidenceCountry { get; set; }
 
         /// <summary>
         /// Регион в стране постоянного проживания
         /// </summary>
-        public string ResidenceRegion { get; set; }
+        public string? ResidenceRegion { get; set; }
 
         /// <summary>
         /// Документ удостоверяющий личность
         /// </summary>
-        public string IdentityDocument { get; set; }
+        public string? IdentityDocument { get; set; }
 
         /// <summary>
         /// Место выдачи документа удостоверяющего личность
         /// </summary>
-        public string IssuePlace { get; set; }
+        public string? IssuePlace { get; set; }
 
         /// <summary>
         /// Код подразделения выдававшего документ
         /// </summary>
-        public string DepartmentCode { get; set; }
+        public string? DepartmentCode { get; set; }
 
         /// <summary>
         /// Дата рождения

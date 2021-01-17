@@ -5,58 +5,53 @@ namespace ICS.Domain.Entities.System
     /// <summary>
     /// Пользователь системы
     /// </summary>
-    public class User
+    public sealed class User
     {
-        protected User()
+		private User()
+		{
+            Id = Guid.NewGuid();
+        }
+
+        public User(Profile profile) : this()
         {
+            ProfileId = profile.Id;
+            Profile = profile;
         }
 
         /// <summary>
         /// Идентификатор
         /// </summary>
-        public virtual Guid Id { get; protected set; }
+        public Guid Id { get; private set; }
 
         /// <summary>
         /// Идентификатор профиля
         /// </summary>
-        public virtual Guid? ProfileId { get; protected set; }
-
-        /// <summary>
-        /// Имя аккаунта
-        /// </summary>
-        public virtual string AccountName { get; protected set; }
-
-        /// <summary>
-        /// Пароль
-        /// </summary>
-        public virtual string Password { get; protected set; }
+        public Guid ProfileId { get; private set; }
 
         /// <summary>
         /// Информация о профиле
         /// Профиль может быть не задан, если служебная учетка (например, админ)
         /// </summary>
-        public virtual Profile Profile { get; protected set; }
+        public Profile Profile { get; private set; }
 
-        internal void Initialize(
-           Guid id,
-           string account,
-           string password,
-           Profile profile = null)
-        {
-            Id = id;
-            SetAccount(account);
-            SetPassword(password);
-            SetProfile(profile);
-        }
+        /// <summary>
+        /// Имя аккаунта
+        /// </summary>
+        public string? Account { get; private set; }
+
+        /// <summary>
+        /// Пароль
+        /// </summary>
+        public string? Password { get; private set; }
 
         public void SetAccount(string account)
         {
-            if (AccountName == account)
+            if (Account == account)
             {
                 return;
             }
 
-            AccountName = account;
+            Account = account;
         }
 
         public void SetPassword(string password)
@@ -67,16 +62,6 @@ namespace ICS.Domain.Entities.System
             }
 
             Password = password;
-        }
-
-        public void SetProfile(Profile profile)
-        {
-            if (ProfileId == profile?.Id)
-            {
-                return;
-            }
-
-            ProfileId = profile.Id;
         }
     }
 }

@@ -13,48 +13,43 @@ namespace ICS.WebApplication.Commands.Read.Results
         public Guid Id { get; set; }
 
         /// <summary>
-        /// Идентификатор приглашения
-        /// </summary>
-        public Guid InvitationId { get; set; }
-
-        /// <summary>
         /// Данные по контакту
         /// </summary>
-        public ContactResult Contact { get; set; }
+        public ContactResult? Contact { get; set; }
 
         /// <summary>
         /// Данные по паспорту
         /// </summary>
-        public PassportResult Passport { get; set; }
+        public PassportResult? Passport { get; set; }
 
         /// <summary>
         /// Данные по организации
         /// </summary>
-        public OrganizationResult Organization { get; set; }
+        public OrganizationResult? Organization { get; set; }
 
         /// <summary>
         /// Данные по государственной регистрации
         /// </summary>
-        public StateRegistrationResult StateRegistration { get; set; }
+        public StateRegistrationResult? StateRegistration { get; set; }
 
         /// <summary>
         /// Должность
         /// </summary>
-        public string Position { get; set; }
+        public string? Position { get; set; }
 
         /// <summary>
         /// Место работы
         /// </summary>
-        public string WorkPlace { get; set; }
+        public string? WorkPlace { get; set; }
 
         /// <summary>
         /// Адрес работы
         /// </summary>
-        public string WorkAddress { get; set; }
+        public string? WorkAddress { get; set; }
 
         /// <summary>
         /// Адрес пребывания
         /// </summary>
-        public string StayAddress { get; set; }
+        public string? StayAddress { get; set; }
     }
 }

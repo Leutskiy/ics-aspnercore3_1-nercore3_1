@@ -8,11 +8,13 @@ namespace ICS.Domain.Data.Repositories.Contracts
 {
     public interface IStateRegistrationRepository
     {
-        StateRegistration Create(string inn, string ogrnip);
+        StateRegistration Create();
+
+        StateRegistration Add(StateRegistrationDto addedStateRegistration);
 
         Task DeleteAsync(Guid id);
 
-        Task<IEnumerable<StateRegistration>> GetAllAsync();
+        Task<List<StateRegistration>> GetAllAsync();
 
         Task<StateRegistration> GetAsync(Guid id);
 

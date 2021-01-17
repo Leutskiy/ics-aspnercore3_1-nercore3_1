@@ -8,18 +8,15 @@ namespace ICS.Domain.Data.Repositories.Contracts
 {
     public interface IContactRepository
     {
-        Contact Create(
-            string email,
-            string postcode,
-            string homePhoneNumber,
-            string workPhoneNumber,
-            string mobilePhoneNumber);
+        Contact Create();
 
         Task DeleteAsync(Guid id);
 
-        Task<IEnumerable<Contact>> GetAllAsync();
+        Task<List<Contact>> GetAllAsync();
 
         Task<Contact> GetAsync(Guid id);
+
+        Contact Add(ContactDto addedContact);
 
         Task UpdateAsync(Guid currentContcatId, ContactDto newContact);
     }

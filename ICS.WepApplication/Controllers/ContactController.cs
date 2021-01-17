@@ -2,8 +2,6 @@
 using ICS.Domain.Models;
 using ICS.Shared;
 using ICS.WebApplication.Commands.Read;
-using ICS.WebApplication.Commands.Read.Contracts;
-using ICS.WebApplication.Commands.Read.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,22 +10,22 @@ using System.Threading.Tasks;
 
 namespace ICS.WebApp.Controllers
 {
-    /// <summary>
-    /// Контроллер контактных данных по сотруднику
-    /// </summary>
-    [ApiController]
+	/// <summary>
+	/// Контроллер контактных данных по сотруднику
+	/// </summary>
+	[ApiController]
     [Authorize]
     [Route("api/v1/[controller]")]
     public class ContactController : ControllerBase
     {
         private readonly IEmployeeRepository _employeeRepository;
-        private readonly EmployeeWriteCommand _employeeWriteCommand;
-        private readonly IReadCommand<EmployeeResult> _employeeReadCommand;
+        private readonly InvitationWriteCommand _employeeWriteCommand;
+        private readonly EmployeeReadCommand _employeeReadCommand;
 
         public ContactController(
             IEmployeeRepository employeeRepository,
-            EmployeeWriteCommand employeeWriteCommand,
-            IReadCommand<EmployeeResult> employeeReadCommand)
+            InvitationWriteCommand employeeWriteCommand,
+            EmployeeReadCommand employeeReadCommand)
         {
             Contract.Argument.IsNotNull(employeeRepository, nameof(employeeRepository));
             Contract.Argument.IsNotNull(employeeWriteCommand, nameof(employeeWriteCommand));

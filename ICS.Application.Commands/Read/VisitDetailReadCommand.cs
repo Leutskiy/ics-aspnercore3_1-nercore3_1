@@ -1,5 +1,4 @@
 ﻿using ICS.Domain.Data.Repositories;
-using ICS.Shared;
 using ICS.WebApplication.Commands.Converters;
 using ICS.WebApplication.Commands.Read.Contracts;
 using ICS.WebApplication.Commands.Read.Results;
@@ -9,17 +8,15 @@ using System.Threading.Tasks;
 
 namespace ICS.WebApplication.Commands.Read
 {
-    /// <summary>
-    /// Команда чтения деталей визита
-    /// </summary>
-    public sealed class VisitDetailReadCommand : IReadCommand<VisitDetailResult>
+	/// <summary>
+	/// Команда чтения деталей визита
+	/// </summary>
+	public sealed class VisitDetailReadCommand : IReadCommand<VisitDetailResult>
     {
         private readonly IVisitDetailRepository _visitDetailRepository;
 
         public VisitDetailReadCommand(IVisitDetailRepository visitDetailRepository)
         {
-            Contract.Argument.IsNotNull(visitDetailRepository, nameof(visitDetailRepository));
-
             _visitDetailRepository = visitDetailRepository;
         }
 
@@ -30,9 +27,7 @@ namespace ICS.WebApplication.Commands.Read
         /// <returns>Информация о деталях визита</returns>
         public async Task<VisitDetailResult> ExecuteAsync(Guid visitDetailId)
         {
-            Contract.Argument.IsNotEmptyGuid(visitDetailId, nameof(visitDetailId));
-
-            var visitDetail = await _visitDetailRepository.GetAsync(visitDetailId).ConfigureAwait(false);
+            var visitDetail = await _visitDetailRepository.GetAsync(visitDetailId);
 
             return DomainEntityConverter.ConvertToResult(visitDetail: visitDetail);
         }

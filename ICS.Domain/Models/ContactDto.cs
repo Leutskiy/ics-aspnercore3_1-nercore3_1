@@ -1,4 +1,6 @@
-﻿namespace ICS.Domain.Models
+﻿using Newtonsoft.Json;
+
+namespace ICS.Domain.Models
 {
     /// <summary>
     /// DTO контакта
@@ -8,26 +10,31 @@
         /// <summary>
         /// Электронная почта
         /// </summary>
-        public string Email { get; set; }
+        [JsonProperty("email")]
+        public string? Email { get; set; }
 
         /// <summary>
         /// Индекс
         /// </summary>
-        public string Postcode { get; set; }
+        [JsonProperty("postcode")]
+        public string? Postcode { get; set; }
 
         /// <summary>
         /// Домашний номер телефона
         /// </summary>
-        public string HomePhoneNumber { get; set; }
+        [JsonProperty("homePhoneNumber")]
+        public string? HomePhoneNumber { get; set; }
 
         /// <summary>
         /// Рабочий номер телефона
         /// </summary>
-        public string WorkPhoneNumber { get; set; }
+        [JsonProperty("workPhoneNumber")]
+        public string? WorkPhoneNumber { get; set; }
 
         /// <summary>
         /// Мобильный номер телефона
         /// </summary>
-        public string MobilePhoneNumber { get; set; }
+        [JsonProperty("mobilePhoneNumber")]
+        public string? MobilePhoneNumber { get; set; }
     }
 }

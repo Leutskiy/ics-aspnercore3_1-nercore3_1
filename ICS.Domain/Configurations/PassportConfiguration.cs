@@ -25,24 +25,24 @@ namespace ICS.Domain.Configurations
                 .HasColumnName("Uid")
                 .ValueGeneratedNever();
 
-            builder.Property(passport => passport.NameRus).HasColumnName("NameRus");
-            builder.Property(passport => passport.NameEng).HasColumnName("NameEng");
-            builder.Property(passport => passport.SurnameRus).HasColumnName("SurnameRus");
-            builder.Property(passport => passport.SurnameEng).HasColumnName("SurnameEng");
-            builder.Property(passport => passport.PatronymicNameRus).HasColumnName("PatronymicNameRus");
-            builder.Property(passport => passport.PatronymicNameEng).HasColumnName("PatronymicNameEng");
-            builder.Property(passport => passport.BirthDate).HasColumnName("BirthDate");
-            builder.Property(passport => passport.BirthPlace).HasColumnName("BirthPlace");
-            builder.Property(passport => passport.BirthCountry).HasColumnName("BirthCountry");
-            builder.Property(passport => passport.Citizenship).HasColumnName("Citizenship");
-            builder.Property(passport => passport.Gender).HasColumnName("Gender");
-            builder.Property(passport => passport.IdentityDocument).HasColumnName("IdentityDocument");
-            builder.Property(passport => passport.IssueDate).HasColumnName("IssueDate");
-            builder.Property(passport => passport.IssuePlace).HasColumnName("IssuePlace");
-            builder.Property(passport => passport.DepartmentCode).HasColumnName("DepartmentCode");
-            builder.Property(passport => passport.Residence).HasColumnName("Residence");
-            builder.Property(passport => passport.ResidenceRegion).HasColumnName("ResidenceRegion");
-            builder.Property(passport => passport.ResidenceCountry).HasColumnName("ResidenceCountry");
+            builder.Property(passport => passport.NameRus).IsRequired(false).HasColumnName("NameRus");
+            builder.Property(passport => passport.NameEng).IsRequired(false).HasColumnName("NameEng");
+            builder.Property(passport => passport.SurnameRus).IsRequired(false).HasColumnName("SurnameRus");
+            builder.Property(passport => passport.SurnameEng).IsRequired(false).HasColumnName("SurnameEng");
+            builder.Property(passport => passport.PatronymicNameRus).IsRequired(false).HasColumnName("PatronymicNameRus");
+            builder.Property(passport => passport.PatronymicNameEng).IsRequired(false).HasColumnName("PatronymicNameEng");
+            builder.Property(passport => passport.BirthDate).IsRequired(false).HasColumnName("BirthDate");
+            builder.Property(passport => passport.BirthPlace).IsRequired(false).HasColumnName("BirthPlace");
+            builder.Property(passport => passport.BirthCountry).IsRequired(false).HasColumnName("BirthCountry");
+            builder.Property(passport => passport.Citizenship).IsRequired(false).HasColumnName("Citizenship");
+            builder.Property(passport => passport.Gender).IsRequired(false).HasColumnName("Gender");
+            builder.Property(passport => passport.IdentityDocument).IsRequired(false).HasColumnName("IdentityDocument");
+            builder.Property(passport => passport.IssueDate).IsRequired(false).HasColumnName("IssueDate");
+            builder.Property(passport => passport.IssuePlace).IsRequired(false).HasColumnName("IssuePlace");
+            builder.Property(passport => passport.DepartmentCode).IsRequired(false).HasColumnName("DepartmentCode");
+            builder.Property(passport => passport.Residence).IsRequired(false).HasColumnName("Residence");
+            builder.Property(passport => passport.ResidenceRegion).IsRequired(false).HasColumnName("ResidenceRegion");
+            builder.Property(passport => passport.ResidenceCountry).IsRequired(false).HasColumnName("ResidenceCountry");
         }
     }
 }

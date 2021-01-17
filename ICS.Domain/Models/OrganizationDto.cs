@@ -1,4 +1,6 @@
-﻿namespace ICS.Domain.Models
+﻿using Newtonsoft.Json;
+
+namespace ICS.Domain.Models
 {
     /// <summary>
     /// DTO организации
@@ -8,26 +10,31 @@
         /// <summary>
         /// DTO государственной регистрации
         /// </summary>
-        public StateRegistrationDto StateRegistration { get; set; }
+        [JsonProperty("stateRegistration")]
+        public StateRegistrationDto? StateRegistration { get; set; }
 
         /// <summary>
         /// Полное наименование
         /// </summary>
-        public string Name { get; set; }
+        [JsonProperty("name")]
+        public string? Name { get; set; }
 
         /// <summary>
         /// Краткое наименование
         /// </summary>
-        public string ShortName { get; set; }
+        [JsonProperty("shortName")]
+        public string? ShortName { get; set; }
 
         /// <summary>
         /// Юридический адрес
         /// </summary>
-        public string LegalAddress { get; set; }
+        [JsonProperty("legalAddress")]
+        public string? LegalAddress { get; set; }
 
         /// <summary>
         /// Направление научной деятельности
         /// </summary>
-        public string ScientificActivity { get; set; }
+        [JsonProperty("scientificActivity")]
+        public string? ScientificActivity { get; set; }
     }
 }

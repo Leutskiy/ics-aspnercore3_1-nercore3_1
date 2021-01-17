@@ -6,192 +6,110 @@ namespace ICS.Domain.Entities
     /// <summary>
     /// Паспорт
     /// </summary>
-    public class Passport
+    public sealed class Passport
     {
-        protected Passport()
+        /// <summary>
+        /// Инициализировать паспорт
+        /// </summary>
+        public Passport()
         {
-
+            Id = Guid.NewGuid();
         }
 
         /// <summary>
         /// Идентификатор
         /// </summary>
-        public virtual Guid Id { get; protected set; }
+        public Guid Id { get; private set; }
 
         /// <summary>
         /// Имя (по-русски)
         /// </summary>
-        public virtual string NameRus { get; protected set; }
+        public string? NameRus { get; private set; }
 
         /// <summary>
         /// Имя (по-английски)
         /// </summary>
-        public virtual string NameEng { get; protected set; }
+        public string? NameEng { get; private set; }
 
         /// <summary>
         /// Фамилия (по-русски)
         /// </summary>
-        public virtual string SurnameRus { get; protected set; }
+        public string? SurnameRus { get; private set; }
 
         /// <summary>
         /// Фамилия (по-английски)
         /// </summary>
-        public virtual string SurnameEng { get; protected set; }
+        public string? SurnameEng { get; private set; }
 
         /// <summary>
         /// Отчество (по-русски)
         /// </summary>
-        public virtual string PatronymicNameRus { get; protected set; }
+        public string? PatronymicNameRus { get; private set; }
 
         /// <summary>
         /// Отчество (по-ангийски)
         /// </summary>
-        public virtual string PatronymicNameEng { get; protected set; }
+        public string? PatronymicNameEng { get; private set; }
 
         /// <summary>
         /// Место рождения
         /// </summary>
-        public virtual string BirthPlace { get; protected set; }
+        public string? BirthPlace { get; private set; }
 
         /// <summary>
         /// Страна рождения
         /// </summary>
-        public virtual string BirthCountry { get; protected set; }
+        public string? BirthCountry { get; private set; }
 
         /// <summary>
         /// Гражданство (подданство)
         /// </summary>
-        public virtual string Citizenship { get; protected set; }
+        public string? Citizenship { get; private set; }
 
         /// <summary>
         /// Местожительство
         /// </summary>
-        public virtual string Residence { get; protected set; }
+        public string? Residence { get; private set; }
 
         /// <summary>
         /// Страна постоянного проживания
         /// </summary>
-        public virtual string ResidenceCountry { get; protected set; }
+        public string? ResidenceCountry { get; private set; }
 
         /// <summary>
         /// Регион в стране постоянного проживания
         /// </summary>
-        public virtual string ResidenceRegion { get; protected set; }
+        public string? ResidenceRegion { get; private set; }
 
         /// <summary>
         /// Документ удостоверяющий личность
         /// </summary>
-        public virtual string IdentityDocument { get; protected set; }
+        public string? IdentityDocument { get; private set; }
 
         /// <summary>
         /// Место выдачи документа удостоверяющего личность
         /// </summary>
-        public virtual string IssuePlace { get; protected set; }
+        public string? IssuePlace { get; private set; }
 
         /// <summary>
         /// Код подразделения выдававшего документ
         /// </summary>
-        public virtual string DepartmentCode { get; protected set; }
+        public string? DepartmentCode { get; private set; }
 
         /// <summary>
         /// Дата рождения
         /// </summary>
-        public virtual DateTime? BirthDate { get; protected set; }
+        public DateTime? BirthDate { get; private set; }
 
         /// <summary>
         /// Дата выдачи документа удостоверяющего личность
         /// </summary>
-        public virtual DateTime? IssueDate { get; protected set; }
+        public DateTime? IssueDate { get; private set; }
 
         /// <summary>
         /// Пол
         /// </summary>
-        public virtual Sex? Gender { get; protected set; }
-
-        /// <summary>
-        /// Инициализировать паспорт
-        /// </summary>
-        /// <param name="id">Идентификатор</param>
-        /// <param name="nameRus">Имя по-русски</param>
-        /// <param name="surnameRus">Фмаилия по-русски</param>
-        /// <param name="nameEng">Имя по-английски</param>
-        /// <param name="surnameEng">Фамилия по-английски</param>
-        /// <param name="patronymicNameRus">Отчество по-русски</param>
-        /// <param name="patronymicNameEng">Отчество по-английски</param>
-        /// <param name="birthPlace">Место рождения</param>
-        /// <param name="birthCountry">Страна рождения</param>
-        /// <param name="departmentCode">Код подразделения</param>
-        /// <param name="citizenship">Гражданство (подданство)</param>
-        /// <param name="identityDocument">Документ идентицирующий личность</param>
-        /// <param name="residence">Местожительство</param>
-        /// <param name="residenceCountry">Страна проживания</param>
-        /// <param name="residenceRegion">Регион проживания</param>
-        /// <param name="issuePlace">Место выда документа идентифицирующего личность</param>
-        /// <param name="birthDate">Дата рождения</param>
-        /// <param name="issueDate">Дата выдачи документа идентифицирующего личность</param>
-        /// <param name="gender">Пол</param>
-        internal void Initialize(
-            Guid id,
-            string nameRus,
-            string surnameRus,
-            string nameEng,
-            string surnameEng,
-            string patronymicNameRus,
-            string patronymicNameEng,
-            string birthPlace,
-            string birthCountry,
-            string departmentCode,
-            string citizenship,
-            string identityDocument,
-            string residence,
-            string residenceCountry,
-            string residenceRegion,
-            string issuePlace,
-            DateTime? birthDate,
-            DateTime? issueDate,
-            Sex? gender)
-        {
-            /*
-            Contract.Argument.IsValidIf(Id != id, $"{Id} (current) != {id} (new)");
-            Contract.Argument.IsNotEmptyGuid(id, nameof(id));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(nameRus, nameof(nameRus));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(nameEng, nameof(nameEng));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(surnameRus, nameof(surnameRus));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(surnameEng, nameof(surnameEng));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(patronymicNameRus, nameof(patronymicNameRus));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(patronymicNameEng, nameof(patronymicNameEng));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(birthPlace, nameof(birthPlace));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(birthCountry, nameof(birthCountry));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(departmentCode, nameof(departmentCode));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(citizenship, nameof(citizenship));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(identityDocument, nameof(identityDocument));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(residence, nameof(residence));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(residenceCountry, nameof(residenceCountry));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(residenceRegion, nameof(residenceRegion));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(issuePlace, nameof(issuePlace));
-            */
-
-            Id = id;
-
-            SetNameRus(nameRus);
-            SetNameEng(nameEng);
-            SetSurnameRus(surnameRus);
-            SetSurnameEng(surnameEng);
-            SetPatronymicNameRus(patronymicNameRus);
-            SetPatronymicNameEng(patronymicNameEng);
-            SetBirthPlace(birthPlace);
-            SetBirthCountry(birthCountry);
-            SetCitizenship(citizenship);
-            SetResidence(residence);
-            SetResidenceCountry(residenceCountry);
-            SetResidenceRegion(residenceRegion);
-            SetIdentityDocument(identityDocument);
-            SetIssuePlace(issuePlace);
-            SetDepartmentCode(departmentCode);
-            SetBirthDate(birthDate);
-            SetIssueDate(issueDate);
-            SetGender(gender);
-        }
+        public Sex? Gender { get; private set; }
 
         /// <summary>
         /// Задать имя по-русски
@@ -199,8 +117,6 @@ namespace ICS.Domain.Entities
         /// <param name="nameRus">Имя по-русски</param>
         public void SetNameRus(string nameRus)
         {
-            //Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(nameRus, nameof(nameRus));
-
             if (NameRus == nameRus)
             {
                 return;
@@ -215,8 +131,6 @@ namespace ICS.Domain.Entities
         /// <param name="nameEng">Имя по-английски</param>
         public void SetNameEng(string nameEng)
         {
-            //Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(nameEng, nameof(nameEng));
-
             if (NameEng == nameEng)
             {
                 return;
@@ -231,8 +145,6 @@ namespace ICS.Domain.Entities
         /// <param name="surnameRus">Фамилия по-русски</param>
         public void SetSurnameRus(string surnameRus)
         {
-            //Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(surnameRus, nameof(surnameRus));
-
             if (SurnameRus == surnameRus)
             {
                 return;
@@ -246,8 +158,6 @@ namespace ICS.Domain.Entities
         /// </summary>
         public void SetSurnameEng(string surnameEng)
         {
-            //Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(surnameEng, nameof(surnameEng));
-
             if (SurnameEng == surnameEng)
             {
                 return;
@@ -262,8 +172,6 @@ namespace ICS.Domain.Entities
         /// <param name="patronymicNameRus">Отчество по-русски</param>
         public void SetPatronymicNameRus(string patronymicNameRus)
         {
-            //Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(patronymicNameRus, nameof(patronymicNameRus));
-
             if (PatronymicNameRus == patronymicNameRus)
             {
                 return;
@@ -278,8 +186,6 @@ namespace ICS.Domain.Entities
         /// <param name="patronymicNameEng">Отчство по-английски</param>
         public void SetPatronymicNameEng(string patronymicNameEng)
         {
-            //Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(patronymicNameEng, nameof(patronymicNameEng));
-
             if (PatronymicNameEng == patronymicNameEng)
             {
                 return;
@@ -294,8 +200,6 @@ namespace ICS.Domain.Entities
         /// <param name="birthPlace">Место рождения</param>
         public void SetBirthPlace(string birthPlace)
         {
-            //Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(birthPlace, nameof(birthPlace));
-
             if (BirthPlace == birthPlace)
             {
                 return;
@@ -310,8 +214,6 @@ namespace ICS.Domain.Entities
         /// <param name="birthCountry">Страна рождения</param>
         public void SetBirthCountry(string birthCountry)
         {
-            //Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(birthCountry, nameof(birthCountry));
-
             if (BirthCountry == birthCountry)
             {
                 return;
@@ -326,8 +228,6 @@ namespace ICS.Domain.Entities
         /// <param name="citizenship">Гражданство (подданство)</param>
         public void SetCitizenship(string citizenship)
         {
-            //Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(citizenship, nameof(citizenship));
-
             if (Citizenship == citizenship)
             {
                 return;
@@ -342,8 +242,6 @@ namespace ICS.Domain.Entities
         /// <param name="residence">Местожительство</param>
         public void SetResidence(string residence)
         {
-            //Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(residence, nameof(residence));
-
             if (Residence == residence)
             {
                 return;
@@ -358,8 +256,6 @@ namespace ICS.Domain.Entities
         /// <param name="residenceCountry">Страна проживания</param>
         public void SetResidenceCountry(string residenceCountry)
         {
-            //Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(residenceCountry, nameof(residenceCountry));
-
             if (ResidenceCountry == residenceCountry)
             {
                 return;
@@ -374,8 +270,6 @@ namespace ICS.Domain.Entities
         /// <param name="residenceRegion">Регион проживания</param>
         public void SetResidenceRegion(string residenceRegion)
         {
-            //Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(residenceRegion, nameof(residenceRegion));
-
             if (ResidenceRegion == residenceRegion)
             {
                 return;
@@ -390,8 +284,6 @@ namespace ICS.Domain.Entities
         /// <param name="identityDocument">Документ идентифицирующий личность</param>
         public void SetIdentityDocument(string identityDocument)
         {
-            //Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(identityDocument, nameof(identityDocument));
-
             if (IdentityDocument == identityDocument)
             {
                 return;
@@ -406,8 +298,6 @@ namespace ICS.Domain.Entities
         /// <param name="issuePlace">Место выдачи документа идентифицирующего личность</param>
         public void SetIssuePlace(string issuePlace)
         {
-            //Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(issuePlace, nameof(issuePlace));
-
             if (IssuePlace == issuePlace)
             {
                 return;
@@ -422,8 +312,6 @@ namespace ICS.Domain.Entities
         /// <param name="departmentCode">Код подразделения выдававшего документ идентифицирующего личность</param>
         public void SetDepartmentCode(string departmentCode)
         {
-            /*Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(departmentCode, nameof(departmentCode));*/
-
             if (DepartmentCode == departmentCode)
             {
                 return;
@@ -472,85 +360,6 @@ namespace ICS.Domain.Entities
             }
 
             Gender = gender;
-        }
-
-        /// <summary>
-        /// Инициализировать паспорт
-        /// </summary>
-        /// <param name="nameRus">Имя по-русски</param>
-        /// <param name="surnameRus">Фмаилия по-русски</param>
-        /// <param name="nameEng">Имя по-английски</param>
-        /// <param name="surnameEng">Фамилия по-английски</param>
-        /// <param name="patronymicNameRus">Отчество по-русски</param>
-        /// <param name="patronymicNameEng">Отчество по-английски</param>
-        /// <param name="birthPlace">Место рождения</param>
-        /// <param name="birthCountry">Страна рождения</param>
-        /// <param name="departmentCode">Код подразделения</param>
-        /// <param name="citizenship">Гражданство (подданство)</param>
-        /// <param name="identityDocument">Документ идентицирующий личность</param>
-        /// <param name="residence">Местожительство</param>
-        /// <param name="residenceCountry">Страна проживания</param>
-        /// <param name="residenceRegion">Регион проживания</param>
-        /// <param name="issuePlace">Место выда документа идентифицирующего личность</param>
-        /// <param name="birthDate">Дата рождения</param>
-        /// <param name="issueDate">Дата выдачи документа идентифицирующего личность</param>
-        /// <param name="gender">Пол</param>
-        public void Update(
-            string nameRus,
-            string surnameRus,
-            string nameEng,
-            string surnameEng,
-            string patronymicNameRus,
-            string patronymicNameEng,
-            string birthPlace,
-            string birthCountry,
-            string departmentCode,
-            string citizenship,
-            string identityDocument,
-            string residence,
-            string residenceCountry,
-            string residenceRegion,
-            string issuePlace,
-            DateTime? birthDate,
-            DateTime? issueDate,
-            Sex? gender)
-        {
-            /*
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(nameRus, nameof(nameRus));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(nameEng, nameof(nameEng));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(surnameRus, nameof(surnameRus));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(surnameEng, nameof(surnameEng));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(patronymicNameRus, nameof(patronymicNameRus));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(patronymicNameEng, nameof(patronymicNameEng));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(birthPlace, nameof(birthPlace));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(birthCountry, nameof(birthCountry));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(departmentCode, nameof(departmentCode));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(citizenship, nameof(citizenship));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(identityDocument, nameof(identityDocument));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(residence, nameof(residence));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(residenceCountry, nameof(residenceCountry));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(residenceRegion, nameof(residenceRegion));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(issuePlace, nameof(issuePlace));
-            */
-
-            SetNameRus(nameRus);
-            SetNameEng(nameEng);
-            SetSurnameRus(surnameRus);
-            SetSurnameEng(surnameEng);
-            SetPatronymicNameRus(patronymicNameRus);
-            SetPatronymicNameEng(patronymicNameEng);
-            SetBirthPlace(birthPlace);
-            SetBirthCountry(birthCountry);
-            SetCitizenship(citizenship);
-            SetResidence(residence);
-            SetResidenceCountry(residenceCountry);
-            SetResidenceRegion(residenceRegion);
-            SetIdentityDocument(identityDocument);
-            SetIssuePlace(issuePlace);
-            SetDepartmentCode(departmentCode);
-            SetBirthDate(birthDate);
-            SetIssueDate(issueDate);
-            SetGender(gender);
         }
     }
 }

@@ -8,7 +8,7 @@ export interface IAppConfig {
 }
 
 export const AppConfig: IAppConfig = {
-    /*icsApiEndpoint: "http://localhost:3333/",*/
-    icsApiEndpoint: "http://ras.techdir.ru:4200/",
+    icsApiEndpoint: "http://localhost:5000/",
+    /*icsApiEndpoint: "http://ras.techdir.ru:4200/",*/
     authGrantType: "password"
 };

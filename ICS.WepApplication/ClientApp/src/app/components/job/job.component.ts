@@ -1,50 +1,26 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { OnInit, Input } from '@angular/core';
 import { Job } from '../../contracts/login-data';
-import { JobDataService } from '../../services/component-providers/job/job-data.service';
 
-@Component({
-  selector: 'app-job',
-  templateUrl: './job.component.html',
-  styleUrls: ['./job.component.scss'],
-  providers: [JobDataService]
-})
 export class JobComponent implements OnInit {
 
+  @Input() scope: string;
   @Input() title: string;
-  @Input() employeeId: string;
 
-  editable: boolean;
-  viewMode: boolean;
+  editable: boolean = false;
+  viewMode: boolean = false;
+  isNewForm: boolean = false;
 
   @Input() job: Job;
 
-  constructor(private jobDataService: JobDataService) {
-    this.job = this.job || new Job();
+  constructor() {
+    this.job = new Job();
   }
 
   ngOnInit(): void {
-    this.viewMode = false;
-    this.editable = false;
+    this.isNewForm = this.scope === "invitation";
   }
 
-  editDetails() {
-    this.editable = !this.editable;
-  }
-
-  saveDetails() {
-    this.editable = !this.editable;
-
-    this.jobDataService.setDataById(this.job, this.employeeId).subscribe(
-      response => {
-        console.log(response);
-      },
-      error => {
-        console.log(error);
-      }
-    );
-  }
-
-  viewDetails() {
+  public openForm(): void {
     this.viewMode = !this.viewMode;
 
     if (!this.viewMode) {
@@ -52,7 +28,19 @@ export class JobComponent implements OnInit {
     }
   }
 
-  private reset() {
+  public editForm(): void {
+    this.editable = !this.editable;
+  }
+
+  public saveForm(): void {
+    this.editable = !this.editable;
+
+    this.CompleteSaveOperation();
+  }
+
+  protected CompleteSaveOperation(): void { };
+
+  private reset(): void {
     this.ngOnInit();
   }
 

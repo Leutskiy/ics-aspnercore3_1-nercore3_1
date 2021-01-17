@@ -15,26 +15,26 @@ namespace ICS.WebApplication.Commands.Read.Results
         /// <summary>
         /// Данные по государственной регистрации
         /// </summary>
-        public StateRegistrationResult StateRegistration { get; set; }
+        public StateRegistrationResult? StateRegistration { get; set; }
 
         /// <summary>
         /// Полное наименование
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// Краткое наименование
         /// </summary>
-        public string ShortName { get; set; }
+        public string? ShortName { get; set; }
 
         /// <summary>
         /// Юридический адрес
         /// </summary>
-        public string LegalAddress { get; set; }
+        public string? LegalAddress { get; set; }
 
         /// <summary>
         /// Направление научной деятельности
         /// </summary>
-        public string ScientificActivity { get; set; }
+        public string? ScientificActivity { get; set; }
     }
 }

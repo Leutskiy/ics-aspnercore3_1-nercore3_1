@@ -5,57 +5,34 @@ namespace ICS.Domain.Entities
     /// <summary>
     /// Государственная регистрация
     /// </summary>
-    public class StateRegistration
+    public sealed class StateRegistration
     {
-        protected StateRegistration()
+        public StateRegistration()
         {
-
+            Id = Guid.NewGuid();
         }
 
         /// <summary>
         /// Идентификатор
         /// </summary>
-        public virtual Guid Id { get; protected set; }
+        public Guid Id { get; init; }
 
         /// <summary>
         /// ИНН
         /// </summary>
-        public virtual string Inn { get; protected set; }
+        public string? Inn { get; private set; }
 
         /// <summary>
         /// ОГРНИП
         /// </summary>
-        public virtual string Ogrnip { get; protected set; }
-
-        /// <summary>
-        /// Инициализировать государственные регистрации
-        /// </summary>
-        internal void Initialize(
-            Guid id,
-            string inn,
-            string ogrnip)
-        {
-            /*
-            Contract.Argument.IsNotEmptyGuid(id, nameof(id));
-            Contract.Argument.IsValidIf(Id != id, $"{Id} (current) != {id} (new)");
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(inn, nameof(inn));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(ogrnip, nameof(ogrnip));
-            */
-
-            Id = id;
-
-            SetInn(inn);
-            SetOgrnip(ogrnip);
-        }
+        public string? Ogrnip { get; private set; }
 
         /// <summary>
         /// Задать ИНН
         /// </summary>
         /// <param name="inn">ИНН</param>
-        public void SetInn(string inn)
+        public void SetInn(string? inn)
         {
-            /*Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(inn, nameof(inn));*/
-
             if (Inn == inn)
             {
                 return;
@@ -68,32 +45,14 @@ namespace ICS.Domain.Entities
         /// Задать ОГРНИП
         /// </summary>
         /// <param name="ogrnip">ОГРНИП</param>
-        public void SetOgrnip(string ogrnip)
+        public void SetOgrnip(string? ogrnip)
         {
-            /*Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(ogrnip, nameof(ogrnip));*/
-
             if (Ogrnip == ogrnip)
             {
                 return;
             }
 
             Ogrnip = ogrnip;
-        }
-
-        /// <summary>
-        /// Обновить государственную регистрацию
-        /// </summary>
-        public void Update(
-            string inn,
-            string ogrnip)
-        {
-            /*
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(inn, nameof(inn));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(ogrnip, nameof(ogrnip));
-            */
-
-            SetInn(inn);
-            SetOgrnip(ogrnip);
         }
     }
 }

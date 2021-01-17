@@ -12,6 +12,8 @@ import { ProfileDataService } from '../../services/component-providers/profile/p
 })
 export class MainComponent implements OnInit {
 
+  scope: string = "profile";
+
   employeePersonDetailsTitle: string = "Профиль";
   employeePasportDetailsTitle: string = "Паспорт";
   employeeContactDetailsTitle: string = "Контакты";
@@ -23,17 +25,20 @@ export class MainComponent implements OnInit {
   employee: Employee;
 
   constructor(
-    private activatedRoute: ActivatedRoute,
-    private employeeDataService: EmployeeDataService,
-    private profileDataService: ProfileDataService) {
-      this.employee = new Employee();
-      this.profile = new Profile();
+      private activatedRoute: ActivatedRoute,
+      private profileDataService: ProfileDataService,
+      private employeeDataService: EmployeeDataService) {
 
-      this.profile.id = this.activatedRoute.snapshot.paramMap.get('profileId');
-      this.employee.id = this.activatedRoute.snapshot.paramMap.get('employeeId');
+    this.profile = new Profile();
+    this.employee = new Employee();
+
+    this.profile.id = this.activatedRoute.snapshot.paramMap.get('profileId');
+    this.employee.id = this.activatedRoute.snapshot.paramMap.get('employeeId');
   }
 
   ngOnInit(): void {
+
+    // TODO: вынести в отдельный метод
     this.employeeDataService.getDataById(this.employee.id).subscribe(
       employeeResult => {
 
@@ -122,7 +127,7 @@ export class MainComponent implements OnInit {
     let byteArray = [];
     let binary_string = window.atob(base64);
     let length = binary_string.length;
-    let bytes = new Uint8Array(length);
+    //let bytes = new Uint8Array(length);
 
     for (let index = 0; index < length; index++) {
         byteArray.push(binary_string.charCodeAt(index));
@@ -131,7 +136,7 @@ export class MainComponent implements OnInit {
     return byteArray;
   }
 
-  formatterFromModel(model: Date | null): string | null {
+  private formatterFromModel(model: Date | null): string | null {
     if (model) {
       let date = {
         day : model.getDate(),

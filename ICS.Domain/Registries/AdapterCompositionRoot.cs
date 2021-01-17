@@ -1,9 +1,8 @@
-﻿using ICS.Domain.Data.Adapters;
-using LightInject;
+﻿using LightInject;
 
 namespace ICS.Domain.Registries
 {
-    public class AdapterCompositionRoot : ICompositionRoot
+	public class AdapterCompositionRoot : ICompositionRoot
     {
         private const string ConnectionStringName = "PostgreSQLConnection";
 

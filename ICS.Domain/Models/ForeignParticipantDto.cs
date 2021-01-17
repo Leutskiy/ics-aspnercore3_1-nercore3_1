@@ -20,6 +20,6 @@ namespace ICS.Domain.Models
         /// <summary>
         /// DTO паспортных данных
         /// </summary>
-        public PassportDto Passport { get; set; }
+        public PassportDto? Passport { get; set; }
     }
 }

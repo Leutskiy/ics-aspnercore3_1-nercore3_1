@@ -8,16 +8,13 @@ namespace ICS.Domain.Data.Repositories.Contracts
 {
     public interface IOrganizationRepository
     {
-        Organization Create(
-           Guid stateRegistrationId,
-           string name,
-           string shortName,
-           string legalAddress,
-           string scientificActivity);
+        Organization Create();
+
+        Organization Add(OrganizationDto addedOrganization);
 
         Task DeleteAsync(Guid id);
 
-        Task<IEnumerable<Organization>> GetAllAsync();
+        Task<List<Organization>> GetAllAsync();
 
         Task<Organization> GetAsync(Guid id);
 

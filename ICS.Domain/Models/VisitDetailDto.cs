@@ -1,4 +1,5 @@
 ﻿using ICS.Domain.Entities;
+using Newtonsoft.Json;
 using System;
 
 namespace ICS.Domain.Models
@@ -9,58 +10,63 @@ namespace ICS.Domain.Models
     public sealed class VisitDetailDto
     {
         /// <summary>
-        /// Идентификатор приглашения
-        /// </summary>
-        public Guid InvitationId { get; set; }
-
-        /// <summary>
         /// Цель визита
         /// </summary>
-        public string Goal { get; set; }
+        [JsonProperty("goal")]
+        public string? Goal { get; set; }
 
         /// <summary>
         /// Страна визита
         /// </summary>
-        public string Country { get; set; }
+        [JsonProperty("country")]
+        public string? Country { get; set; }
 
         /// <summary>
         /// Пункты посещения
         /// </summary>
-        public string VisitingPoints { get; set; }
+        [JsonProperty("visitingPoints")]
+        public string? VisitingPoints { get; set; }
 
         /// <summary>
         /// Период пребывания
         /// </summary>
+        [JsonProperty("periodInDays")]
         public long PeriodInDays { get; set; }
 
         /// <summary>
         /// Дата пребытия
         /// </summary>
+        [JsonProperty("arrivalDate")]
         public DateTime ArrivalDate { get; set; }
 
         /// <summary>
         /// Дата депортации
         /// </summary>
+        [JsonProperty("departureDate")]
         public DateTime DepartureDate { get; set; }
 
         /// <summary>
         /// Вид визы
         /// </summary>
-        public string VisaType { get; set; }
+        [JsonProperty("visaType")]
+        public string? VisaType { get; set; }
 
         /// <summary>
         /// Город получения визы
         /// </summary>
-        public string VisaCity { get; set; }
+        [JsonProperty("visaCity")]
+        public string? VisaCity { get; set; }
 
         /// <summary>
         /// Страна получения визы
         /// </summary>
-        public string VisaCountry { get; set; }
+        [JsonProperty("visaCountry")]
+        public string? VisaCountry { get; set; }
 
         /// <summary>
         /// Кратность визы
         /// </summary>
+        [JsonProperty("visaMultiplicity")]
         public VisaMultiplicity VisaMultiplicity { get; set; }
     }
 }

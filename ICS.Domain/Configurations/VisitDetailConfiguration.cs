@@ -25,17 +25,16 @@ namespace ICS.Domain.Configurations
                 .HasColumnName("Uid")
                 .ValueGeneratedNever();
 
-            builder.Property(visitDetail => visitDetail.InvitationId).HasColumnName("InvitationUid");
-            builder.Property(visitDetail => visitDetail.Goal).HasColumnName("Goal");
-            builder.Property(visitDetail => visitDetail.Country).HasColumnName("Country");
-            builder.Property(visitDetail => visitDetail.VisitingPoints).HasColumnName("VisitingPoints");
-            builder.Property(visitDetail => visitDetail.VisaType).HasColumnName("VisaType");
-            builder.Property(visitDetail => visitDetail.VisaCity).HasColumnName("VisaCity");
-            builder.Property(visitDetail => visitDetail.VisaCountry).HasColumnName("VisaCountry");
-            builder.Property(visitDetail => visitDetail.VisaMultiplicity).HasColumnName("VisaMultiplicity");
-            builder.Property(visitDetail => visitDetail.PeriodDays).HasColumnName("PeriodDays");
-            builder.Property(visitDetail => visitDetail.ArrivalDate).HasColumnName("ArrivalDate");
-            builder.Property(visitDetail => visitDetail.DepartureDate).HasColumnName("DepartureDate");
+            builder.Property(visitDetail => visitDetail.Goal).IsRequired(false).HasColumnName("Goal");
+            builder.Property(visitDetail => visitDetail.Country).IsRequired(false).HasColumnName("Country");
+            builder.Property(visitDetail => visitDetail.VisitingPoints).IsRequired(false).HasColumnName("VisitingPoints");
+            builder.Property(visitDetail => visitDetail.VisaType).IsRequired(false).HasColumnName("VisaType");
+            builder.Property(visitDetail => visitDetail.VisaCity).IsRequired(false).HasColumnName("VisaCity");
+            builder.Property(visitDetail => visitDetail.VisaCountry).IsRequired(false).HasColumnName("VisaCountry");
+            builder.Property(visitDetail => visitDetail.VisaMultiplicity).IsRequired(false).HasColumnName("VisaMultiplicity");
+            builder.Property(visitDetail => visitDetail.PeriodDays).IsRequired(false).HasColumnName("PeriodDays");
+            builder.Property(visitDetail => visitDetail.ArrivalDate).IsRequired(false).HasColumnName("ArrivalDate");
+            builder.Property(visitDetail => visitDetail.DepartureDate).IsRequired(false).HasColumnName("DepartureDate");
         }
     }
 }

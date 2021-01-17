@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ICS.Domain.Entities;
+using ICS.Domain.Models;
 
 namespace ICS.Domain.Data.Repositories.Contracts
 {
     public interface IForeignParticipantRepository
     {
-        ForeignParticipant Create(
-            Guid alienId,
-            Guid passportId,
-            Guid invitationId);
+        ForeignParticipant Create();
+
+        ForeignParticipant Add(ForeignParticipantDto addedForeignParticipant);
 
         Task DeleteAsync(Guid id);
 
-        Task<IEnumerable<ForeignParticipant>> GetAllAsync();
+        Task<List<ForeignParticipant>> GetAllAsync();
 
         Task<ForeignParticipant> GetAsync(Guid id);
     }

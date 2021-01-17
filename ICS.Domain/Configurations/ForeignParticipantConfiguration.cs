@@ -21,13 +21,18 @@ namespace ICS.Domain.Configurations
 
             builder.HasKey(foreignParticipant => foreignParticipant.Id);
 
-            builder.Property(foreignParticipant => foreignParticipant.Id)
+            builder
+                .Property(foreignParticipant => foreignParticipant.Id)
                 .HasColumnName("Uid")
                 .ValueGeneratedNever();
 
-            builder.Property(foreignParticipant => foreignParticipant.AlienId).HasColumnName("AlienUid");
-            builder.Property(foreignParticipant => foreignParticipant.InvitationId).HasColumnName("InvitationUid");
-            builder.Property(foreignParticipant => foreignParticipant.PassportId).HasColumnName("PassportUid");
+            builder.Property(foreignParticipant => foreignParticipant.PassportId).IsRequired(false).HasColumnName("PassportUid");
+
+            builder
+                .HasOne(foreignParticipant => foreignParticipant.Passport)
+                .WithOne()
+                .HasForeignKey<ForeignParticipant>(foreignParticipant => foreignParticipant.PassportId)
+                .HasPrincipalKey<Passport>(passport => passport.Id);
         }
     }
 }

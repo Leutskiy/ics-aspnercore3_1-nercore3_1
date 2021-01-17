@@ -2,7 +2,6 @@
 using ICS.Domain.Data.Repositories.Contracts;
 using ICS.Domain.Entities;
 using ICS.Domain.Models;
-using ICS.Domain.Services.Contracts;
 using ICS.Shared;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,31 +10,25 @@ using System.Threading.Tasks;
 
 namespace ICS.Domain.Data.Repositories
 {
-    /// <summary>
-    /// Репозиторий регистраций государственных номеров
-    /// </summary>
-    public sealed class StateRegistrationRepository : IStateRegistrationRepository
+	/// <summary>
+	/// Репозиторий регистраций государственных номеров
+	/// </summary>
+	public sealed class StateRegistrationRepository : IStateRegistrationRepository
     {
-        private readonly IIdGenerator _idGenerator;
         private readonly DomainContext _domainContext;
 
-        public StateRegistrationRepository(
-            IIdGenerator idGenerator,
-            DomainContext databaseContext)
+        public StateRegistrationRepository(DomainContext databaseContext)
         {
-            _idGenerator = idGenerator ?? throw new ArgumentNullException(nameof(idGenerator));
-            _domainContext = databaseContext ?? throw new ArgumentNullException(nameof(databaseContext));
+            _domainContext = databaseContext;
         }
 
         /// <summary>
         /// Получить все государственные регистрации
         /// </summary>
         /// <returns>Государственные регистрации</returns>
-        public async Task<IEnumerable<StateRegistration>> GetAllAsync()
+        public Task<List<StateRegistration>> GetAllAsync()
         {
-            var stateRegistrations = await _domainContext.Set<StateRegistration>().ToArrayAsync().ConfigureAwait(false);
-
-            return stateRegistrations;
+            return  _domainContext.Set<StateRegistration>().ToListAsync();
         }
 
         /// <summary>
@@ -47,7 +40,7 @@ namespace ICS.Domain.Data.Repositories
         {
             Contract.Argument.IsNotEmptyGuid(id, nameof(id));
 
-            var stateRegistration = await _domainContext.Set<StateRegistration>().FindAsync(id).ConfigureAwait(false);
+            var stateRegistration = await _domainContext.Set<StateRegistration>().FindAsync(id);
 
             if (stateRegistration == null)
             {
@@ -60,25 +53,10 @@ namespace ICS.Domain.Data.Repositories
         /// <summary>
         /// Создать государственную регистрацию
         /// </summary>
-        /// <param name="inn">ИНН</param>
-        /// <param name="ogrnip"><ОГРНИП/param>
         /// <returns>Идентификатор государственной регистрации</returns>
-        public StateRegistration Create(
-            string inn,
-            string ogrnip)
+        public StateRegistration Create()
         {
-            /*
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(inn, nameof(inn));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(ogrnip, nameof(ogrnip));
-            */
-
-            var createdStateRegistration = _domainContext.Set<StateRegistration>().CreateProxy();
-
-            var id = _idGenerator.Generate();
-            createdStateRegistration.Initialize(
-                id: id,
-                inn: inn,
-                ogrnip: ogrnip);
+            var createdStateRegistration = new StateRegistration();
 
             var newStateRegistration = _domainContext.Set<StateRegistration>().Add(createdStateRegistration);
 
@@ -86,22 +64,32 @@ namespace ICS.Domain.Data.Repositories
         }
 
         /// <summary>
+        /// Добавить государственную регистрацию
+        /// </summary>
+        /// <param name="addedStateRegistration">Добавляемая государственная регистрация</param>
+        /// <returns>Государственная регистрация</returns>
+        public StateRegistration Add(StateRegistrationDto addedStateRegistration)
+        {
+            var createdStateRegistration = Create();
+
+            createdStateRegistration.SetInn(addedStateRegistration.Inn);
+            createdStateRegistration.SetOgrnip(addedStateRegistration.Ogrnip);
+
+            return createdStateRegistration;
+        }
+
+        /// <summary>
         /// Обновить государственную регистрацию
         /// </summary>
-        /// <param name="currentStateRegistrationId">Идентификатор обновляемой государственной регистрации</param>
+        /// <param name="stateRegistrationId">Идентификатор обновляемой государственной регистрации</param>
         /// <param name="stateRegistrationDto">Данные для полного обновления государственной регистрации</param>
         public async Task UpdateAsync(
-            Guid currentStateRegistrationId,
+            Guid stateRegistrationId,
             StateRegistrationDto stateRegistrationDto)
         {
-            Contract.Argument.IsNotEmptyGuid(currentStateRegistrationId, nameof(currentStateRegistrationId));
-            Contract.Argument.IsNotNull(stateRegistrationDto, nameof(stateRegistrationDto));
-
-            var currentStateRegistration = await GetAsync(currentStateRegistrationId).ConfigureAwait(false);
-
-            currentStateRegistration.Update(
-                inn: stateRegistrationDto.Inn,
-                ogrnip: stateRegistrationDto.Ogrnip);
+            var currentStateRegistration = await GetAsync(stateRegistrationId);
+            currentStateRegistration.SetInn(stateRegistrationDto.Inn);
+            currentStateRegistration.SetOgrnip(stateRegistrationDto.Ogrnip);
         }
 
         /// <summary>
@@ -113,7 +101,7 @@ namespace ICS.Domain.Data.Repositories
         {
             Contract.Argument.IsNotEmptyGuid(id, nameof(id));
 
-            var deletedStateRegistration = await GetAsync(id).ConfigureAwait(false);
+            var deletedStateRegistration = await GetAsync(id);
 
             _domainContext.Set<StateRegistration>().Remove(deletedStateRegistration);
         }

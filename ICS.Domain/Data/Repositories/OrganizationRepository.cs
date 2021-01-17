@@ -2,7 +2,6 @@
 using ICS.Domain.Data.Repositories.Contracts;
 using ICS.Domain.Entities;
 using ICS.Domain.Models;
-using ICS.Domain.Services.Contracts;
 using ICS.Shared;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,29 +15,22 @@ namespace ICS.Domain.Data.Repositories
     /// </summary>
     public sealed class OrganizationRepository : IOrganizationRepository
     {
-        private readonly IIdGenerator _idGenerator;
+        private readonly IStateRegistrationRepository _stateRegistrationRepository;
         private readonly DomainContext _domainContext;
 
-        public OrganizationRepository(
-            IIdGenerator idGenerator,
-            DomainContext databaseContext)
+		public OrganizationRepository(IStateRegistrationRepository stateRegistrationRepository, DomainContext databaseContext)
+		{
+			_stateRegistrationRepository = stateRegistrationRepository;
+			_domainContext = databaseContext;
+		}
+
+		/// <summary>
+		/// Получить все организации
+		/// </summary>
+		/// <returns>Организации</returns>
+		public Task<List<Organization>> GetAllAsync()
         {
-            Contract.Argument.IsNotNull(idGenerator, nameof(idGenerator));
-            Contract.Argument.IsNotNull(databaseContext, nameof(databaseContext));
-
-            _idGenerator = idGenerator;
-            _domainContext = databaseContext;
-        }
-
-        /// <summary>
-        /// Получить все организации
-        /// </summary>
-        /// <returns>Организации</returns>
-        public async Task<IEnumerable<Organization>> GetAllAsync()
-        {
-            var organizations = await _domainContext.Set<Organization>().ToArrayAsync().ConfigureAwait(false);
-
-            return organizations;
+            return _domainContext.Set<Organization>().ToListAsync();
         }
 
         /// <summary>
@@ -48,9 +40,7 @@ namespace ICS.Domain.Data.Repositories
         /// <returns>Организация</returns>
         public async Task<Organization> GetAsync(Guid id)
         {
-            Contract.Argument.IsNotEmptyGuid(id, nameof(id));
-
-            var organization = await _domainContext.Set<Organization>().FindAsync(id).ConfigureAwait(false);
+            var organization = await _domainContext.Set<Organization>().FindAsync(id);
 
             if (organization == null)
             {
@@ -64,40 +54,39 @@ namespace ICS.Domain.Data.Repositories
         /// Создать организацию
         /// </summary>
         /// <param name="stateRegistration">Государственная регистрация</param>
-        /// <param name="name">Наименование</param>
         /// <param name="shortName">Короткое наименование</param>
         /// <param name="legalAddress">Юридический адрес</param>
         /// <param name="scientificActivity">Научная деятельность</param>
         /// <returns>Идентификатор организации</returns>
-        public Organization Create(
-            Guid stateRegistrationId,
-            string name,
-            string shortName,
-            string legalAddress,
-            string scientificActivity)
+        public Organization Create()
         {
-            /*
-            Contract.Argument.IsNotEmptyGuid(stateRegistrationId, nameof(stateRegistrationId));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(name, nameof(name));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(shortName, nameof(shortName));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(scientificActivity, nameof(scientificActivity));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(legalAddress, nameof(legalAddress));
-            */
+            var createdOrganization = new Organization();
 
-            var createdOrganization = _domainContext.Set<Organization>().CreateProxy();
+            _domainContext.Set<Organization>().Add(createdOrganization);
 
-            var id = _idGenerator.Generate();
-            createdOrganization.Initialize(
-                id: id,
-                stateRegistrationId: stateRegistrationId,
-                name: name,
-                shortName: shortName,
-                scientificActivity: scientificActivity,
-                legalAddress: legalAddress);
+            return createdOrganization;
+        }
 
-            var newOrganization = _domainContext.Set<Organization>().Add(createdOrganization);
+        /// <summary>
+        /// Добавить организацию
+        /// </summary>
+        /// <param name="addedOrganization">DTO добавляемой организации</param>
+        public Organization Add(OrganizationDto addedOrganization)
+        {
+            var createdOrganization = Create();
 
-            return newOrganization.Entity;
+            if (addedOrganization.StateRegistration != null)
+			{
+                var stateRegistration = _stateRegistrationRepository.Add(addedOrganization.StateRegistration);
+                createdOrganization.SetStateRegistration(stateRegistration);
+            }
+            
+            createdOrganization.SetName(addedOrganization.Name);
+            createdOrganization.SetShortName(addedOrganization.ShortName);
+            createdOrganization.SetLegalAddress(addedOrganization.LegalAddress);
+            createdOrganization.SetScientificActivity(addedOrganization.ScientificActivity);
+
+            return createdOrganization;
         }
 
         /// <summary>
@@ -106,19 +95,26 @@ namespace ICS.Domain.Data.Repositories
         /// <param name="currentOrganizationId">Идентификатор обновляемой организации</param>
         /// <param name="organizationDto">Данные для полного обновления организации</param>
         public async Task UpdateAsync(
-            Guid currentOrganizationId,
+            Guid organizationId,
             OrganizationDto organizationDto)
         {
-            Contract.Argument.IsNotEmptyGuid(currentOrganizationId, nameof(currentOrganizationId));
-            Contract.Argument.IsNotNull(organizationDto, nameof(organizationDto));
+            var currentOrganization = await GetAsync(organizationId);
 
-            var currentOrganization = await GetAsync(currentOrganizationId).ConfigureAwait(false);
+            if (currentOrganization.StateRegistrationId.HasValue && organizationDto.StateRegistration != null)
+            {
+                await _stateRegistrationRepository.UpdateAsync(currentOrganization.StateRegistrationId.Value, organizationDto.StateRegistration);
+            }
+            else if (organizationDto.StateRegistration != null)
+            {
+                var stateRegistration = _stateRegistrationRepository.Add(organizationDto.StateRegistration);
+                currentOrganization.SetStateRegistration(stateRegistration);
+            }
 
             currentOrganization.Update(
                 name: organizationDto.Name,
                 shortName: organizationDto.ShortName,
-                scientificActivity: organizationDto.ScientificActivity,
-                legalAddress: organizationDto.LegalAddress);
+                legalAddress: organizationDto.LegalAddress,
+                scientificActivity: organizationDto.ScientificActivity);
         }
 
         /// <summary>
@@ -130,7 +126,7 @@ namespace ICS.Domain.Data.Repositories
         {
             Contract.Argument.IsNotEmptyGuid(id, nameof(id));
 
-            var deletedOrganization = await GetAsync(id).ConfigureAwait(false);
+            var deletedOrganization = await GetAsync(id);
 
             _domainContext.Set<Organization>().Remove(deletedOrganization);
         }
