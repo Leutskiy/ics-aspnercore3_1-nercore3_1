@@ -9,16 +9,14 @@ namespace ICS.Domain.Repositories.Contracts
     public interface IDocumentRepository
     {
         Guid Create(
-            Guid invitationId,
+            Invitation invitation,
             string name,
             byte[] content,
-            DateTime createdDate,
-            DateTime updateDate,
             DocumentType documentType);
 
         Task DeleteAsync(Guid id);
 
-        Task<IEnumerable<Document>> GetAllAsync();
+        Task<List<Document>> GetAllAsync();
 
         Task<Document> GetAsync(Guid id);
     }

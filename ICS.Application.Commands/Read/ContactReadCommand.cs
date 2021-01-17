@@ -1,5 +1,4 @@
 ﻿using ICS.Domain.Data.Repositories.Contracts;
-using ICS.Shared;
 using ICS.WebApplication.Commands.Converters;
 using ICS.WebApplication.Commands.Read.Contracts;
 using ICS.WebApplication.Commands.Read.Results;
@@ -9,17 +8,15 @@ using System.Threading.Tasks;
 
 namespace ICS.WebApplication.Commands.Read
 {
-    /// <summary>
-    /// Команда чтения контакта
-    /// </summary>
-    public sealed class ContactReadCommand : IReadCommand<ContactResult>
+	/// <summary>
+	/// Команда чтения контакта
+	/// </summary>
+	public sealed class ContactReadCommand : IReadCommand<ContactResult>
     {
         private readonly IContactRepository _contactRepository;
 
         public ContactReadCommand(IContactRepository contactRepository)
         {
-            Contract.Argument.IsNotNull(contactRepository, nameof(contactRepository));
-
             _contactRepository = contactRepository;
         }
 
@@ -30,9 +27,7 @@ namespace ICS.WebApplication.Commands.Read
         /// <returns>Информация о контакте</returns>
         public async Task<ContactResult> ExecuteAsync(Guid contactId)
         {
-            Contract.Argument.IsNotEmptyGuid(contactId, nameof(contactId));
-
-            var contact = await _contactRepository.GetAsync(contactId).ConfigureAwait(false);
+            var contact = await _contactRepository.GetAsync(contactId);
 
             return DomainEntityConverter.ConvertToResult(contact: contact);
         }

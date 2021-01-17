@@ -2,23 +2,17 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ICS.Domain.Entities;
+using ICS.Domain.Models;
 
 namespace ICS.Domain.Data.Repositories
 {
     public interface IVisitDetailRepository
     {
-        VisitDetail Create(
-            Guid invitationId,
-            string goal,
-            string country,
-            string visitingPoints,
-            long periodDays,
-            DateTime arrivalDate,
-            DateTime departureDate,
-            string visaType,
-            string visaCity,
-            string visaCountry,
-            VisaMultiplicity visaMultiplicity);
+        Task<Guid> UpdateAsync(Guid visitDetailId, VisitDetailDto visitDetailDto);
+
+        VisitDetail Create();
+
+        VisitDetail Add(VisitDetailDto addedVisitDetail);
 
         Task DeleteAsync(Guid id);
 

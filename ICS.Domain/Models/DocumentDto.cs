@@ -11,12 +11,12 @@ namespace ICS.Domain.Models
         /// <summary>
         /// Наименование
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// Содержимое
         /// </summary>
-        public byte[] Content { get; set; }
+        public byte[]? Content { get; set; }
 
         /// <summary>
         /// Дата создания

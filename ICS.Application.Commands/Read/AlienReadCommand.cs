@@ -1,5 +1,4 @@
 ﻿using ICS.Domain.Data.Repositories.Contracts;
-using ICS.Shared;
 using ICS.WebApplication.Commands.Converters;
 using ICS.WebApplication.Commands.Read.Contracts;
 using ICS.WebApplication.Commands.Read.Results;
@@ -9,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace ICS.WebApplication.Commands.Read
 {
-    /// <summary>
-    /// Команда чтения иностранцев
-    /// </summary>
-    public sealed class AlienReadCommand : IReadCommand<AlienResult>
+	/// <summary>
+	/// Команда чтения иностранцев
+	/// </summary>
+	public sealed class AlienReadCommand : IReadCommand<AlienResult>
     {
         private readonly IAlienRepository _alienRepository;
         private readonly IReadCommand<ContactResult> _contactReadCommand;
@@ -27,12 +26,6 @@ namespace ICS.WebApplication.Commands.Read
             IReadCommand<OrganizationResult> organizationReadCommand,
             IReadCommand<StateRegistrationResult> stateRegistrationReadCommand)
         {
-            Contract.Argument.IsNotNull(alienRepository, nameof(alienRepository));
-            Contract.Argument.IsNotNull(contactReadCommand, nameof(contactReadCommand));
-            Contract.Argument.IsNotNull(passportReadCommand, nameof(passportReadCommand));
-            Contract.Argument.IsNotNull(organizationReadCommand, nameof(organizationReadCommand));
-            Contract.Argument.IsNotNull(stateRegistrationReadCommand, nameof(stateRegistrationReadCommand));
-
             _alienRepository = alienRepository;
             _contactReadCommand = contactReadCommand;
             _passportReadCommand = passportReadCommand;
@@ -47,14 +40,12 @@ namespace ICS.WebApplication.Commands.Read
         /// <returns>Информация об иностранце</returns>
         public async Task<AlienResult> ExecuteAsync(Guid alienId)
         {
-            Contract.Argument.IsNotEmptyGuid(alienId, nameof(alienId));
+            var alien = await _alienRepository.GetAsync(alienId);
 
-            var alien = await _alienRepository.GetAsync(alienId).ConfigureAwait(false);
-
-            var contactResult = await _contactReadCommand.ExecuteAsync(alien.ContactId).ConfigureAwait(false);
-            var passportResult = await _passportReadCommand.ExecuteAsync(alien.PassportId).ConfigureAwait(false);
-            var organizationResult = await _organizationReadCommand.ExecuteAsync(alien.OrganizationId).ConfigureAwait(false);
-            var stateRegistrationResult = await _stateRegistrationReadCommand.ExecuteAsync(alien.StateRegistrationId).ConfigureAwait(false);
+            var contactResult = alien.ContactId.HasValue ? await _contactReadCommand.ExecuteAsync(alien.ContactId.Value) : default;
+            var passportResult = alien.PassportId.HasValue ? await _passportReadCommand.ExecuteAsync(alien.PassportId.Value) : default;
+            var organizationResult = alien.OrganizationId.HasValue ? await _organizationReadCommand.ExecuteAsync(alien.OrganizationId.Value) : default;
+            var stateRegistrationResult = alien.StateRegistrationId.HasValue ? await _stateRegistrationReadCommand.ExecuteAsync(alien.StateRegistrationId.Value) : default;
 
             return DomainEntityConverter.ConvertToResult(
                 alien: alien,

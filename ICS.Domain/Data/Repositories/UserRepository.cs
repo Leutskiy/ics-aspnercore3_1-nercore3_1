@@ -2,7 +2,6 @@
 using ICS.Domain.Data.Repositories.Contracts;
 using ICS.Domain.Entities;
 using ICS.Domain.Entities.System;
-using ICS.Domain.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -12,52 +11,45 @@ namespace ICS.Domain.Data.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly IIdGenerator _idGenerator;
         private readonly SystemContext _systemContext;
         private readonly DomainContext _domainContext;
 
         public UserRepository(
-            IIdGenerator idGenerator,
             SystemContext systemContext,
             DomainContext domainContext)
         {
-            _idGenerator = idGenerator;
             _systemContext = systemContext;
             _domainContext = domainContext;
         }
 
-        public User Create(string userName, string password, Profile profile = null)
+        public User Create(string account, string password, Profile profile)
         {
-            var createdUser = _systemContext.Set<User>().CreateProxy();
+            var createdUser = new User(profile);
 
-            var id = _idGenerator.Generate();
-            createdUser.Initialize(
-                id: id,
-                account: userName,
-                password: password,
-                profile: profile);
+            createdUser.SetAccount(account);
+            createdUser.SetPassword(password);
 
-            var newUser = _systemContext.Set<User>().Add(createdUser);
+            _systemContext.Users.Add(createdUser);
 
-            return newUser.Entity;
+            return createdUser;
         }
 
         public async Task<User> Get(string userName, string password)
         {
-            var user = await _systemContext.Set<User>().FirstOrDefaultAsync(ctx => ctx.AccountName == userName && ctx.Password == password);
+            var user = await _systemContext.Users.FirstOrDefaultAsync(ctx => ctx.Account == userName && ctx.Password == password);
 
             /*проверка на NULL*/
 
             return user;
         }
 
+        // TODO: этот метод убрать отсюда
         public async Task<Guid> GetEmployeeId(Guid userId)
         {
             var employeeId = await _domainContext.Set<Employee>()
-                    .Where(empl => empl.UserId == userId)
-                    .Select(empl => empl.Id)
-                    .FirstOrDefaultAsync()
-                    .ConfigureAwait(false);
+                .Where(empl => empl.UserId == userId)
+                .Select(empl => empl.Id)
+                .FirstOrDefaultAsync();
 
             if (employeeId == Guid.Empty)
             {
@@ -69,18 +61,14 @@ namespace ICS.Domain.Data.Repositories
 
         public async Task<Guid> GetProfileId(Guid userId)
         {
-            var profileId = await _systemContext.Set<Profile>()
-                    .Where(prof => prof.UserId == userId)
-                    .Select(prof => prof.Id)
-                    .FirstOrDefaultAsync()
-                    .ConfigureAwait(false);
+            var user = await _systemContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
 
-            if (profileId == Guid.Empty)
+            if (user == null)
             {
-                throw new Exception($"Профиль не найден для пользователя с id: {userId}");
+                throw new Exception($"User is not found by id: {userId}");
             }
 
-            return profileId;
+            return user.ProfileId;
         }
     }
 }

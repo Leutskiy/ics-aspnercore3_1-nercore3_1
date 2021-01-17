@@ -10,21 +10,16 @@ namespace ICS.Domain.Models
         /// <summary>
         /// DTO иностранца
         /// </summary>
-        public AlienDto Alien { get; set; }
-
-        /// <summary>
-        /// DTO сотрудника
-        /// </summary>
-        public EmployeeDto Employee { get; set; }
+        public InviteeDto Alien { get; init; } = default!;
 
         /// <summary>
         /// DTO деталей визита
         /// </summary>
-        public VisitDetailDto VisitDetail { get; set; }
+        public VisitDetailDto? VisitDetail { get; init; }
 
         /// <summary>
         /// Коллекция DTOs иностранного сопровождения сопровождения
         /// </summary>
-        public IEnumerable<ForeignParticipantDto> ForeignParticipants { get; set; }
+        public IEnumerable<ForeignParticipantDto>? ForeignParticipants { get; init; }
     }
 }

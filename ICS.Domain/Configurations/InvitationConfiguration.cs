@@ -27,12 +27,28 @@ namespace ICS.Domain.Configurations
 
             builder.Property(invitation => invitation.AlienId).HasColumnName("AlienUid");
             builder.Property(invitation => invitation.EmployeeId).HasColumnName("EmployeeUid");
-            builder.Property(invitation => invitation.VisitDetailId).HasColumnName("VisitDetailUid");
+            builder.Property(invitation => invitation.VisitDetailId).IsRequired(false).HasColumnName("VisitDetailUid");
             builder.Property(invitation => invitation.CreatedDate).HasColumnName("CreatedDate");
             builder.Property(invitation => invitation.UpdateDate).HasColumnName("UpdateDate");
             builder.Property(invitation => invitation.Status).HasColumnName("Status");
 
-            builder.HasMany(invitation => invitation.ForeignParticipants);
+            builder
+                .HasOne(invitation => invitation.Alien)
+                .WithMany()
+                .HasForeignKey(invitation => invitation.AlienId)
+                .HasPrincipalKey(alien => alien.Id);
+
+            builder
+                .HasOne(invitation => invitation.Employee)
+                .WithMany(employee => employee.Invitations)
+                .HasForeignKey(invitation => invitation.EmployeeId)
+                .HasPrincipalKey(employee => employee.Id);
+
+            builder
+                .HasOne(invitation => invitation.VisitDetail)
+                .WithOne()
+                .HasForeignKey<Invitation>(invitation => invitation.VisitDetailId)
+                .HasPrincipalKey<VisitDetail>(visitDetail => visitDetail.Id);
         }
     }
 }

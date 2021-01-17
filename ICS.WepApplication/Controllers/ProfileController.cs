@@ -1,55 +1,38 @@
-﻿using ICS.Domain.Data.Repositories.Contracts;
-using ICS.Domain.Models;
+﻿using ICS.Domain.Models;
 using ICS.Shared;
 using ICS.WebApplication.Commands.Read;
 using ICS.WebApplication.Commands.Read.Contracts;
 using ICS.WebApplication.Commands.Read.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace ICS.WebApp.Controllers
 {
-    ///TODO: лучше назвать как ProfileEmployee
-    /// <summary>
-    /// Контроллер профиля
-    /// </summary>
-    [ApiController]
+	///TODO: лучше назвать как ProfileEmployee
+	/// <summary>
+	/// Контроллер профиля
+	/// </summary>
+	[ApiController]
     [Authorize]
     [Route("api/v1/[controller]")]
     public class ProfileController : ControllerBase
     {
-        private readonly IEmployeeRepository _employeeRepository;
         private readonly IReadCommand<ProfileResult> _profileReadCommand;
-        private readonly IReadCommand<EmployeeResult> _employeeReadCommand;
-        private readonly UserReadCommand _userReadCommand;
+        private readonly EmployeeReadCommand _employeeReadCommand;
+
         private readonly ProfileWriteCommand _profileWriteCommand;
 
         public ProfileController(
-            IEmployeeRepository employeeRepository,
             IReadCommand<ProfileResult> profileReadCommand,
-            IReadCommand<EmployeeResult> employeeReadCommand,
-            UserReadCommand userReadCommand,
+            EmployeeReadCommand employeeReadCommand,
             ProfileWriteCommand profileWriteCommand)
         {
-            Contract.Argument.IsNotNull(employeeRepository, nameof(employeeRepository));
-            Contract.Argument.IsNotNull(profileReadCommand, nameof(profileReadCommand));
-            Contract.Argument.IsNotNull(employeeReadCommand, nameof(employeeReadCommand));
-            Contract.Argument.IsNotNull(userReadCommand, nameof(userReadCommand));
-            Contract.Argument.IsNotNull(profileWriteCommand, nameof(profileWriteCommand));
-
-            _employeeRepository = employeeRepository;
             _profileReadCommand = profileReadCommand;
             _employeeReadCommand = employeeReadCommand;
-            _userReadCommand = userReadCommand;
             _profileWriteCommand = profileWriteCommand;
         }
 
@@ -57,8 +40,8 @@ namespace ICS.WebApp.Controllers
         [Route("{profileId:guid}/employee/{employeeId:guid}")]
         public async Task<IActionResult> GetById(Guid profileId, Guid employeeId)
         {
-            var profileResult = await _profileReadCommand.ExecuteAsync(profileId).ConfigureAwait(false);
-            var employeeResult = await _employeeReadCommand.ExecuteAsync(employeeId).ConfigureAwait(false);
+            var profileResult = await _profileReadCommand.ExecuteAsync(profileId);
+            var employeeResult = await _employeeReadCommand.ExecuteAsync(employeeId);
 
             var userInfo = new UserInfoResult
             {

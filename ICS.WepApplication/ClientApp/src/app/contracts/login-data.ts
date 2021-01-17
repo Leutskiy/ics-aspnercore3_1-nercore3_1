@@ -266,7 +266,13 @@ export enum Gender {
   empty
 }
 
-export class Passport {
+export enum VisaMultiplicity {
+  single,
+  double,
+  multiple
+}
+
+export interface Passport2 {
   id: string;
   nameRus: string;
   nameEng: string;
@@ -274,18 +280,40 @@ export class Passport {
   surnameEng: string;
   patronymicNameRus: string;
   patronymicNameEng: string;
-  gender: Gender | number | null;
-  birthDate: Date | string | null;
   birthPlace: string;
   birthCountry: string;
-  residence: string;
   citizenship: string;
-  residenceRegion: string;
+  residence: string;
   residenceCountry: string;
-  issueDate: Date | string | null;
+  residenceRegion: string;
+  identityDocument: string;
   issuePlace: string;
   departmentCode: string;
-  identityDocument: string;
+  birthDate: Date;
+  issueDate: Date;
+  gender: number;
+}
+
+export class Passport {
+  id: string;
+  nameRus: string | null;
+  nameEng: string | null;
+  surnameRus: string | null;
+  surnameEng: string | null;
+  patronymicNameRus: string | null;
+  patronymicNameEng: string | null;
+  gender: Gender | number | null;
+  birthDate: Date | string | null;
+  birthPlace: string | null;
+  birthCountry: string | null;
+  residence: string | null;
+  citizenship: string | null;
+  residenceRegion: string | null;
+  residenceCountry: string | null;
+  issueDate: Date | string | null;
+  issuePlace: string | null;
+  departmentCode: string | null;
+  identityDocument: string | null;
 
   constructor() {
     this.id = "";
@@ -311,24 +339,24 @@ export class Passport {
 
   public init(
     id: string,
-    nameRus: string,
-    nameEng: string,
-    surnameRus: string,
-    surnameEng: string,
-    patronymicNameRus: string,
-    patronymicNameEng: string,
+    nameRus: string | null,
+    nameEng: string | null,
+    surnameRus: string | null,
+    surnameEng: string | null,
+    patronymicNameRus: string | null,
+    patronymicNameEng: string | null,
     gender: Gender | number | null,
     birthDate: string | null,
-    birthPlace: string,
-    birthCountry: string,
-    residence: string,
-    citizenship: string,
-    residenceRegion: string,
-    residenceCountry: string,
+    birthPlace: string | null,
+    birthCountry: string | null,
+    residence: string | null,
+    citizenship: string | null,
+    residenceRegion: string | null,
+    residenceCountry: string | null,
     issueDate: string | null,
-    issuePlace: string,
-    departmentCode: string,
-    identityDocument: string): void {
+    issuePlace: string | null,
+    departmentCode: string | null,
+    identityDocument: string | null): void {
       this.id = id;
       this.nameRus = nameRus;
       this.nameEng = nameEng;
@@ -349,4 +377,90 @@ export class Passport {
       this.departmentCode = departmentCode;
       this.identityDocument = identityDocument;
     }
+}
+
+/* Описание DTO для просмотра и изменения данных*/
+
+// DTO для создания приглашения
+export class InviteeDto {
+  public alienJob: Job | null;
+  public alienContact: Contact | null;
+  public alienPassport: Passport | null;
+  public alienOrganization: Organization | null;
+  public alienScientificInfo: ScientificInfo | null;
+  public alienStateRegistration: StateRegistration | null;
+  public alienWorkAddress: string | null;
+  public alienStayAddress: string | null;
+}
+
+export class Alien {
+  id: string;
+  contact: Contact | null;
+  passport: Passport | null;
+  organization: Organization | null;
+  stateRegistration: StateRegistration | null;
+  position: string | null;
+  workPlace: string | null;
+  workAddress: string | null;
+  stayAddress: string | null;
+
+  constructor() {
+    this.id = "";
+    this.contact = new Contact();
+    this.passport = new Passport();
+    this.organization = new Organization();
+    this.stateRegistration = new StateRegistration();
+  }
+}
+
+export class VisitDetail {
+  id: string;
+  goal: string | null;
+  country: string | null;
+  visitingPoints: string | null;
+  periodInDays: number | null;
+  arrivalDate: Date | string | null;
+  departureDate: Date | string | null;
+  visaType: string | null;
+  visaCity: string | null;
+  visaCountry: string | null;
+  visaMultiplicity: VisaMultiplicity | null;
+}
+
+export class ForeignParticipant {
+  id: string;
+  passport: Passport | null;
+
+  constructor() {
+    this.id = "";
+    this.passport = new Passport();
+  }
+}
+
+export class Invitation {
+  id: string;
+  alien: Alien;
+  employee: Employee;
+  visitDetail: VisitDetail | null;
+  foreignParticipants: ForeignParticipant[] | null;
+
+  constructor() {
+    this.id = "";
+    this.alien = new Alien();
+    this.employee = new Employee();
+    this.visitDetail = new VisitDetail();
+    this.foreignParticipants = [];
+  }
+}
+
+export class NewInvitationDto {
+  alien: InviteeDto;
+  visitDetail: VisitDetail | null;
+  foreignParticipants: ForeignParticipant[] | null;
+
+  constructor() {
+    this.alien = new InviteeDto();
+    this.visitDetail = new VisitDetail();
+    this.foreignParticipants = [];
+  }
 }

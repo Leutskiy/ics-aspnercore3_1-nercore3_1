@@ -31,6 +31,12 @@ namespace ICS.Domain.Configurations
             builder.Property(document => document.UpdateDate).HasColumnName("UpdateDate");
             builder.Property(document => document.CreatedDate).HasColumnName("CreatedDate");
             builder.Property(document => document.DocumentType).HasColumnName("DocumentType");
+
+            builder
+                .HasOne(document => document.Invitation)
+                .WithMany()
+                .HasForeignKey(document => document.InvitationId)
+                .HasPrincipalKey(invitation => invitation.Id);
         }
     }
 }

@@ -1,49 +1,28 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { OnInit, Input } from '@angular/core';
 import { Organization } from '../../contracts/login-data';
-import { OrganizationDataService } from '../../services/component-providers/organization/organization-data.service';
 
-@Component({
-  selector: 'app-organization',
-  templateUrl: './organization.component.html',
-  styleUrls: ['./organization.component.scss'],
-  providers: [OrganizationDataService]
-})
 export class OrganizationComponent implements OnInit {
 
+  @Input() scope: string;
   @Input() title: string;
-
-  editable: boolean;
-  viewMode: boolean;
-
   @Input() organization: Organization;
 
-  constructor(private organizationDataService: OrganizationDataService) {
-    this.organization = this.organization || new Organization();
+  editable: boolean = false;
+  viewMode: boolean = false;
+  isNewForm: boolean = false;
+
+  constructor() {
+    this.organization = new Organization();
   }
 
   ngOnInit(): void {
     this.viewMode = false;
     this.editable = false;
+
+    this.isNewForm = this.scope === "invitation";
   }
 
-  editDetails() {
-    this.editable = !this.editable;
-  }
-
-  saveDetails() {
-    this.editable = !this.editable;
-
-    this.organizationDataService.setDataById(this.organization, this.organization.id).subscribe(
-      addedOrganizationId => {
-        console.log(addedOrganizationId);
-      },
-      error => {
-        console.log(error);
-      }
-    );
-  }
-
-  viewDetails() {
+  openForm() {
     this.viewMode = !this.viewMode;
 
     if (!this.viewMode) {
@@ -51,7 +30,19 @@ export class OrganizationComponent implements OnInit {
     }
   }
 
+  editForm() {
+    this.editable = !this.editable;
+  }
+
+  saveForm() {
+    this.editable = !this.editable;
+
+    this.CompleteSaveOperation();
+  }
+
   private reset() {
     this.ngOnInit();
   }
+
+  protected CompleteSaveOperation(): void { };
 }

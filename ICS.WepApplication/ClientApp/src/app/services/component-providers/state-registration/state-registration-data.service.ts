@@ -3,14 +3,15 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { APP_CONFIG, IAppConfig } from '../../../settings/app-config';
 import { ComponentDataService } from '../component-data.service';
 import { StateRegistration } from '../../../contracts/login-data';
+import { ActivatedRoute } from '@angular/router';
 
 @Injectable()
 export class StateRegistrationDataService extends ComponentDataService<StateRegistration> {
 
   constructor(
     private http: HttpClient,
-    @Inject(APP_CONFIG) private config: IAppConfig) {
-      super('api/v1/stateregistration', http, config);
+    @Inject(APP_CONFIG) private config: IAppConfig, activatedRoute: ActivatedRoute) {
+    super('api/v1/stateregistration', http, config, activatedRoute);
   }
 
   setDataById(componentData: StateRegistration, id: string) {

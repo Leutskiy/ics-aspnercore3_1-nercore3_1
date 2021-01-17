@@ -1,5 +1,4 @@
 ﻿using ICS.Domain.Data.Repositories.Contracts;
-using ICS.Shared;
 using ICS.WebApplication.Commands.Converters;
 using ICS.WebApplication.Commands.Read.Contracts;
 using ICS.WebApplication.Commands.Read.Results;
@@ -21,9 +20,6 @@ namespace ICS.WebApplication.Commands.Read
             IOrganizationRepository organizationRepository,
             IReadCommand<StateRegistrationResult> stateRegistrationReadCommand)
         {
-            Contract.Argument.IsNotNull(organizationRepository, nameof(organizationRepository));
-            Contract.Argument.IsNotNull(stateRegistrationReadCommand, nameof(stateRegistrationReadCommand));
-
             _organizationRepository = organizationRepository;
             _stateRegistrationReadCommand = stateRegistrationReadCommand;
         }
@@ -35,10 +31,11 @@ namespace ICS.WebApplication.Commands.Read
         /// <returns>Информация об организации</returns>
         public async Task<OrganizationResult> ExecuteAsync(Guid organizationId)
         {
-            Contract.Argument.IsNotEmptyGuid(organizationId, nameof(organizationId));
+            var organization = await _organizationRepository.GetAsync(organizationId);
 
-            var organization = await _organizationRepository.GetAsync(organizationId).ConfigureAwait(false);
-            var stateRegistrationResult = await _stateRegistrationReadCommand.ExecuteAsync(organization.StateRegistrationId).ConfigureAwait(false);
+            var stateRegistrationResult = organization.StateRegistrationId.HasValue
+                ? await _stateRegistrationReadCommand.ExecuteAsync(organization.StateRegistrationId.Value)
+                : default;
 
             return DomainEntityConverter.ConvertToResult(
                 organization: organization,

@@ -8,164 +8,110 @@ namespace ICS.Domain.Entities
     /// <summary>
     /// Приглашение
     /// </summary>
-    public class Invitation
+    public sealed class Invitation
     {
-        protected Invitation()
-        {
+		private Invitation()
+		{
+            Id = Guid.NewGuid();
         }
 
         /// <summary>
         /// Идентификатор
         /// </summary>
-        public virtual Guid Id { get; protected set; }
+        public Guid Id { get; private set; }
 
         /// <summary>
         /// Идентификатор иностранца
         /// </summary>
-        public virtual Guid AlienId { get; protected set; }
+        public Guid AlienId { get; private set; }
 
         /// <summary>
-        /// Идентификатор сотрудника
+        /// Идентификатор иностранца
         /// </summary>
-        public virtual Guid EmployeeId { get; protected set; }
+        public Guid EmployeeId { get; private set; }
 
         /// <summary>
         /// Идентификатор деталей поездки по приглашению
         /// </summary>
-        public virtual Guid VisitDetailId { get; protected set; }
+        public Guid? VisitDetailId { get; private set; }
+
+        /// <summary>
+        /// Иностранец
+        /// </summary>
+		public Alien Alien { get; private set; }
+
+        /// <summary>
+        /// Сотрудник
+        /// </summary>
+		public Employee Employee { get; private set; }
+
+        /// <summary>
+        /// Детали поездки
+        /// </summary>
+        public VisitDetail? VisitDetail { get; private set; }
 
         /// <summary>
         /// Сопровождение
         /// </summary>
-        public virtual List<ForeignParticipant> ForeignParticipants { get; protected set; }
-
-        /// <summary>
-        /// Дата создания
-        /// </summary>
-        public virtual DateTimeOffset CreatedDate { get; protected set; }
-
-        /// <summary>
-        /// Дата изменения
-        /// </summary>
-        public virtual DateTimeOffset UpdateDate { get; protected set; }
+        public List<ForeignParticipant> ForeignParticipants { get; private set; }
 
         /// <summary>
         /// Статус
         /// </summary>
-        public virtual InvitationStatus Status { get; protected set; }
+        public InvitationStatus Status { get; private set; }
+
+        #region TODO: убрать в shadow properties
 
         /// <summary>
-        /// Инициализировать приглашение
+        /// Дата создания
         /// </summary>
-        internal void Initialize(
-            Guid id,
-            Guid alienId,
-            Guid employeeId,
-            Guid visitDetailId,
-            ICollection<ForeignParticipant> foreignParticipants,
-            DateTimeOffset createdDate,
-            DateTimeOffset updateDate,
-            InvitationStatus invitationStatus)
-        {
-            /*Contract.Argument.IsValidIf(Id != id, $"{Id} (current) != {id} (new)");
-            Contract.Argument.IsNotEmptyGuid(id, nameof(id));
-            Contract.Argument.IsValidIf(createdDate <= updateDate, $"{nameof(createdDate)}:{createdDate} < {nameof(updateDate)}:{updateDate}");
-            Contract.Argument.IsNotEmptyGuid(alienId, nameof(alienId));
-            Contract.Argument.IsNotEmptyGuid(employeeId, nameof(employeeId));
-            Contract.Argument.IsNotEmptyGuid(visitDetailId, nameof(visitDetailId));*/
-
-            Id = id;
-
-            SetAlienId(alienId);
-            SetEmployeeId(employeeId);
-            SetVisitDetailId(visitDetailId);
-            SetForeignParticipants(foreignParticipants);
-            SetCreatedDate(createdDate);
-            SetUpdateDate(updateDate);
-            SetInvitationStatus(invitationStatus);
-        }
+        public DateTimeOffset CreatedDate { get; private set; }
 
         /// <summary>
-        /// Задать приглашенного иностраца
+        /// Дата изменения
         /// </summary>
-        /// <param name="alienId">Инстранец</param>
-        internal void SetAlienId(Guid alienId)
-        {
-            //Contract.Argument.IsNotEmptyGuid(alienId, nameof(alienId));
+        public DateTimeOffset UpdateDate { get; private set; }
 
-            if (AlienId == alienId)
-            {
-                return;
-            }
-
-            AlienId = alienId;
-        }
+        #endregion
 
         /// <summary>
-        /// Задать сотрудника
+        /// Создать приглашение
         /// </summary>
-        /// <param name="employeeId">Сотрудник</param>
-        internal void SetEmployeeId(Guid employeeId)
+        /// <param name="alien">Иностранец, которого приглашают</param>
+        /// <param name="employee">Сотрудник, который приглашает</param>
+        public Invitation(Alien alien, Employee employee) : this()
         {
-            //Contract.Argument.IsNotEmptyGuid(employeeId, nameof(employeeId));
+            Alien = alien;
+            Employee = employee;
+            AlienId = alien.Id;
+            EmployeeId = employee.Id;
+            Status = InvitationStatus.Creating;
+            ForeignParticipants = new List<ForeignParticipant>();
 
-            if (EmployeeId == employeeId)
-            {
-                return;
-            }
-
-            EmployeeId = employeeId;
+            UpdateDate = DateTimeOffset.Now;
+            CreatedDate = DateTimeOffset.Now;
         }
 
         /// <summary>
         /// Задать детали визита
         /// </summary>
         /// <param name="visitDetailId">Детали визита</param>
-        internal void SetVisitDetailId(Guid visitDetailId)
+        public void SetVisitDetail(VisitDetail visitDetail)
         {
-            //Contract.Argument.IsNotEmptyGuid(visitDetailId, nameof(visitDetailId));
-
-            if (VisitDetailId == visitDetailId)
+            if (VisitDetailId == visitDetail.Id)
             {
                 return;
             }
 
-            VisitDetailId = visitDetailId;
-        }
-
-        /// <summary>
-        /// Задать дату создания
-        /// </summary>
-        /// <param name="createdDate">Дата создания</param>
-        internal void SetCreatedDate(DateTimeOffset createdDate)
-        {
-            if (CreatedDate == createdDate)
-            {
-                return;
-            }
-
-            CreatedDate = createdDate;
-        }
-
-        /// <summary>
-        /// Задать дату обновления
-        /// </summary>
-        /// <param name="updateDate">Дата обновления</param>
-        internal void SetUpdateDate(DateTimeOffset updateDate)
-        {
-            if (UpdateDate == updateDate)
-            {
-                return;
-            }
-
-            UpdateDate = updateDate;
+            VisitDetailId = visitDetail.Id;
+            VisitDetail = visitDetail;
         }
 
         /// <summary>
         /// Задать статус приглашения
         /// </summary>
         /// <param name="invitationStatus">Статус приглашения</param>
-        internal void SetInvitationStatus(InvitationStatus invitationStatus)
+        public void SetInvitationStatus(InvitationStatus invitationStatus)
         {
             if (Status == invitationStatus)
             {
@@ -179,7 +125,7 @@ namespace ICS.Domain.Entities
         /// Добавить сопровождающего иностранца-участника
         /// </summary>
         /// <param name="foreignParticipant">Иностранный участник</param>
-        internal void AddForeignParticipant(ForeignParticipant foreignParticipant)
+        public void AddForeignParticipant(ForeignParticipant foreignParticipant)
         {
             if (ForeignParticipants.Any(fp => fp.Id == foreignParticipant.Id))
             {
@@ -193,11 +139,8 @@ namespace ICS.Domain.Entities
         /// Добавить сопровождающих иностранцев-участников
         /// </summary>
         /// <param name="foreignParticipant">Инострацы участники</param>
-        internal void AddForeignParticipants(params ForeignParticipant[] foreignParticipants)
+        public void AddForeignParticipants(params ForeignParticipant[] foreignParticipants)
         {
-            /*Contract.Argument.IsNotNull(foreignParticipants, nameof(foreignParticipants));
-            Contract.Implementation.IsNotNull(ForeignParticipants, nameof(ForeignParticipants));*/
-
             foreach (var foreignParticipant in foreignParticipants)
             {
                 if (!ForeignParticipants.Any(fp => fp.Id == foreignParticipant.Id))
@@ -211,10 +154,8 @@ namespace ICS.Domain.Entities
         /// Задать иностранное сопровождения
         /// </summary>
         /// <param name="foreignParticipants">Иностранное сопровождение</param>
-        private void SetForeignParticipants(ICollection<ForeignParticipant> foreignParticipants)
+        public void SetForeignParticipants(IEnumerable<ForeignParticipant> foreignParticipants)
         {
-            ForeignParticipants = ForeignParticipants ?? new List<ForeignParticipant>();
-
             AddForeignParticipants(foreignParticipants.ToArray());
         }
     }

@@ -8,15 +8,10 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { SigninComponent } from './components/signin/signin.component';
 import { ProfileComponent } from './components/profile/profile.component';
-import { JobComponent } from './components/job/job.component';
-import { StateRegistrationComponent } from './components/state-registration/state-registration.component';
-import { OrganizationComponent } from './components/organization/organization.component';
-import { PassportComponent } from './components/passport/passport.component';
-import { ContactDetailsComponent } from './components/contact-details/contact-details.component';
 import { PersonDetailsComponent } from './components/person-details/person-details.component';
 import { MainComponent } from './components/main/main.component';
 import { InvitationComponent } from './components/invitation/invitation.component';
-import { InvitationMainComponent } from './components/invitation/invitation-main/invitation-main.component';
+import { NewInvitationFormComponent } from './components/invitation/new-form/new-invitation-form.component';
 import { AuthService } from './services/auth.service';
 import { SingupService } from './services/singup.service';
 import { HttpClientModule } from '@angular/common/http';
@@ -29,28 +24,45 @@ import { SingupComponent } from './components/singup/singup.component';
 import { NgbdDatepickerAdapterModule } from './modules/adapters/datepicker-adapter.module';
 import { LoadingScreenComponent } from './components/loading-screen/loading-screen.component';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
-import { AlienComponent } from './components/invitation/alien/alien.component';
+import { EmployeePassportComponent } from './components/passport/employee-passport.component';
+import { AlienPassportInvitationComponent } from './components/passport/alien-passport-invitation.component';
+import { EmployeeOrganizationComponent } from './components/organization/employee-organization.component';
+import { AlienOrganizationInvitationComponent } from './components/organization/alien-organization-invitation.component';
+import { AlienJobInvitationComponent } from './components/job/alien-job-invitation.component';
+import { EmployeeJobComponent } from './components/job/employee-job.component';
+import { AlienContactsInvitationComponent } from './components/contacts/alien-contacts-invitation.component';
+import { EmployeeContactsComponent } from './components/contacts/employee-contacts.component';
+import { EmployeeStateRegistrationComponent } from './components/state-registration/employee-state-registration.component';
+import { AlienStateRegistrationInvitationComponent } from './components/state-registration/alien-state-registration-invitation.component';
+import { VisitDetailsInvitationComponent } from './components/visit-details/visit-details.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    SigninComponent,
-    ProfileComponent,
-    JobComponent,
-    StateRegistrationComponent,
-    OrganizationComponent,
-    PassportComponent,
-    ContactDetailsComponent,
-    PersonDetailsComponent,
-    MainComponent,
-    InvitationComponent,
-    InvitationMainComponent,
     HeaderComponent,
-    NotFoundPageComponent,
+    SigninComponent,
     SingupComponent,
-    LoadingScreenComponent,
+
+    PersonDetailsComponent,
+    EmployeeJobComponent,
+    EmployeePassportComponent,
+    EmployeeContactsComponent,
+    EmployeeOrganizationComponent,
+    EmployeeStateRegistrationComponent,
+    AlienJobInvitationComponent,
+    AlienPassportInvitationComponent,
+    AlienContactsInvitationComponent,
+    AlienOrganizationInvitationComponent,
+    AlienStateRegistrationInvitationComponent,
+    MainComponent,
+    ProfileComponent,
+    NewInvitationFormComponent,
+    InvitationComponent,
+
+    NotFoundPageComponent,
     FileUploadComponent,
-    AlienComponent
+    LoadingScreenComponent,
+    VisitDetailsInvitationComponent,
   ],
   imports: [
     BrowserModule,

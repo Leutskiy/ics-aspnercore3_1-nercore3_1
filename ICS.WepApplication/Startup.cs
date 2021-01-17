@@ -15,6 +15,7 @@ using ICS.Domain.Data.Adapters;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Microsoft.Net.Http.Headers;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 
 namespace ICS.WebAppCore
 {
@@ -92,25 +93,30 @@ namespace ICS.WebAppCore
                 Pooling = true
             };
 
+            var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")
+                ?? Configuration.GetConnectionString("PostgreSQLConnectionLocal");
 
-            var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+            services
+                // .AddEntityFrameworkNpgsql() Depricated
+                .AddDbContext<DomainContext>(options => options.UseNpgsql(connectionString, builder => builder.MigrationsAssembly("ICS.Domain"))/*, contextLifetime: ServiceLifetime.Transient, optionsLifetime: ServiceLifetime.Transient*/)
+                .AddDbContext<SystemContext>(options => options.UseNpgsql(connectionString, builder => builder.MigrationsAssembly("ICS.Domain")));
 
-            services.AddEntityFrameworkProxies();
-            services.AddEntityFrameworkNpgsql()
+            /*//services.AddEntityFrameworkProxies();
+             * services.AddEntityFrameworkNpgsql()
                 .AddDbContext<DomainContext>(opt =>
                 {
                     opt.UseNpgsql(connectionString);
-                    opt.UseLazyLoadingProxies(true);
+                    //opt.UseLazyLoadingProxies(true);
                 })
                 .AddDbContext<SystemContext>(opt =>
                 {
                     opt.UseNpgsql(connectionString);
-                    opt.UseLazyLoadingProxies(true);
-                });
+                    //opt.UseLazyLoadingProxies(true);
+                });*/
 
             // Web API middleware which will register all the controllers (classes derived from ControllerBase)
             /// <see cref="https://medium.com/imaginelearning/asp-net-core-3-1-microservice-quick-start-c0c2f4d6c7fa"/>
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -120,8 +126,6 @@ namespace ICS.WebAppCore
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "JWT Auth Demo", Version = "v1" });
-
                 var securityScheme = new OpenApiSecurityScheme
                 {
                     Name = "JWT Authentication",
@@ -136,11 +140,14 @@ namespace ICS.WebAppCore
                         Type = ReferenceType.SecurityScheme
                     }
                 };
+
                 c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {securityScheme, new string[] { }}
                 });
+
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "JWT Auth Demo", Version = "v1" });
             });
 
             services.AddCors(options =>
@@ -169,7 +176,6 @@ namespace ICS.WebAppCore
             // Default ASP.NET middleware
             // app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             if (!env.IsDevelopment())
             {
                 app.UseSpaStaticFiles();
@@ -178,8 +184,20 @@ namespace ICS.WebAppCore
             app.UseCors("AllowAll");
             app.UseRouting();
 
+
+
             app.UseAuthentication();
             app.UseAuthorization();
+
+            /*
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("swagger/v1/swagger.json", "JWT Auth Demo V1");
+                c.DocumentTitle = "JWT Auth Demo";
+                c.RoutePrefix = "";
+            });
+            */
 
             // Here is code to add your custom Simple Injector-created middleware to the pipeline.
 
@@ -201,8 +219,8 @@ namespace ICS.WebAppCore
 
                 if (env.IsDevelopment())
                 {
-                    // spa.UseAngularCliServer(npmScript: "start");
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    spa.UseAngularCliServer(npmScript: "start");
+                    //spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
                 }
             });
 
@@ -211,8 +229,9 @@ namespace ICS.WebAppCore
             {
                 c.SwaggerEndpoint("swagger/v1/swagger.json", "JWT Auth Demo V1");
                 c.DocumentTitle = "JWT Auth Demo";
-                c.RoutePrefix = string.Empty;
+                c.RoutePrefix = "";
             });
+
         }
     }
 }

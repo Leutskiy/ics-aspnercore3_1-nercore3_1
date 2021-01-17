@@ -8,23 +8,11 @@ namespace ICS.Domain.Data.Repositories.Contracts
 {
     public interface IEmployeeRepository
     {
-        Employee Create(
-            Guid userId,
-            Guid? managerId = null,
-            Guid? invitationId = null,
-            Guid? contactId = null,
-            Guid? passportId = null,
-            Guid? organizationId = null,
-            Guid? stateRegistrationId = null,
-            string academicDegree = null,
-            string academicRank = null,
-            string education = null,
-            string workPlace = null,
-            string position = null);
+        Employee Create(Guid userId);
 
         Task DeleteAsync(Guid id);
 
-        Task<IEnumerable<Employee>> GetAllAsync();
+        Task<List<Employee>> GetAllAsync();
 
         Task<Employee> GetAsync(Guid id);
 

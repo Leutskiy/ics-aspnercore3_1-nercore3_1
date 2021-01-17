@@ -1,4 +1,6 @@
-﻿namespace ICS.Domain.Models
+﻿using Newtonsoft.Json;
+
+namespace ICS.Domain.Models
 {
     /// <summary>
     /// DTO научной вовлеченности сотрудника
@@ -8,16 +10,19 @@
         /// <summary>
         /// Научное звание
         /// </summary>
-        public string AcademicRank { get; set; }
+        [JsonProperty("academicRank")]
+        public string? AcademicRank { get; set; }
 
         /// <summary>
         /// Научная степень
         /// </summary>
-        public string AcademicDegree { get; set; }
+        [JsonProperty("academicDegree")]
+        public string? AcademicDegree { get; set; }
 
         /// <summary>
         /// Образование
         /// </summary>
-        public string Education { get; set; }
+        [JsonProperty("education")]
+        public string? Education { get; set; }
     }
 }

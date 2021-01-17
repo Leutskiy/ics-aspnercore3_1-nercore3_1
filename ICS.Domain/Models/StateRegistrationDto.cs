@@ -1,4 +1,6 @@
-﻿namespace ICS.Domain.Models
+﻿using Newtonsoft.Json;
+
+namespace ICS.Domain.Models
 {
     /// <summary>
     /// DTO государственной регистрации
@@ -8,11 +10,13 @@
         /// <summary>
         /// ИНН
         /// </summary>
-        public string Inn { get; set; }
+        [JsonProperty("inn")]
+        public string? Inn { get; set; }
 
         /// <summary>
         /// ОГРНИП
         /// </summary>
-        public string Ogrnip { get; set; }
+        [JsonProperty("ogrnip")]
+        public string? Ogrnip { get; set; }
     }
 }

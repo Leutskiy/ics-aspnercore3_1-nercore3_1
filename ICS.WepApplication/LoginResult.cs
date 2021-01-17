@@ -1,26 +1,26 @@
-﻿using System;
-using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace ICS.WebAppCore
 {
-    public class LoginResult
+    public sealed class LoginResult
     {
-        [JsonPropertyName("username")]
-        public string UserName { get; set; }
+        [JsonProperty("username")]
+        public string? UserName { get; init; }
 
-        [JsonPropertyName("role")]
-        public string Role { get; set; }
+        [JsonProperty("role")]
+        public string? Role { get; init; }
 
-        [JsonPropertyName("originalUserName")]
-        public string OriginalUserName { get; set; }
+        [JsonProperty("originalUserName")]
+        public string? OriginalUserName { get; init; }
 
-        [JsonPropertyName("access_token")]
-        public string AccessToken { get; set; }
+        [JsonProperty("access_token")]
+        public string? AccessToken { get; init; }
 
-        [JsonPropertyName("refresh_token")]
-        public string RefreshToken { get; set; }
+        [JsonProperty("refresh_token")]
+        public string? RefreshToken { get; init; }
 
-        [JsonPropertyName("expires_in")]
-        public DateTime? ExpiresAt { get; set; }
+        [JsonProperty("expires_in")]
+        public DateTime? ExpiresAt { get; init; }
     }
 }

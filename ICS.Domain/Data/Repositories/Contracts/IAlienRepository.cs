@@ -2,25 +2,19 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ICS.Domain.Entities;
+using ICS.Domain.Models;
 
 namespace ICS.Domain.Data.Repositories.Contracts
 {
     public interface IAlienRepository
     {
-        Alien Create(
-            Guid invitationId,
-            Guid contactId,
-            Guid passportId,
-            Guid organizationId,
-            Guid stateRegistrationId,
-            string position,
-            string workPlace,
-            string workAddress,
-            string stayAddress);
+        Alien Create();
+
+        Alien Add(InviteeDto addedAlien);
 
         Task DeleteAsync(Guid id);
 
-        Task<IEnumerable<Alien>> GetAllAsync();
+        Task<List<Alien>> GetAllAsync();
 
         Task<Alien> GetAsync(Guid id);
     }

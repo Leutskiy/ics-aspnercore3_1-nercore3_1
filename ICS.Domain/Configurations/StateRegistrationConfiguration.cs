@@ -25,8 +25,8 @@ namespace ICS.Domain.Configurations
                 .HasColumnName("Uid")
                 .ValueGeneratedNever();
 
-            builder.Property(stateRegistration => stateRegistration.Inn).HasColumnName("INN");
-            builder.Property(stateRegistration => stateRegistration.Ogrnip).HasColumnName("OGRNIP");
+            builder.Property(stateRegistration => stateRegistration.Inn).IsRequired(false).HasColumnName("INN");
+            builder.Property(stateRegistration => stateRegistration.Ogrnip).IsRequired(false).HasColumnName("OGRNIP");
         }
     }
 }

@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute} from '@angular/router';
 import { UserInfo } from '../../contracts/login-data';
 import { ProfileDataService } from '../../services/component-providers/profile/profile-data.service';
-import { Observable } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile',
@@ -30,10 +28,10 @@ export class ProfileComponent implements OnInit {
     this.profileId = this.activatedRoute.snapshot.paramMap.get('profileId');
     this.employeeId = this.activatedRoute.snapshot.paramMap.get('employeeId');
 
-    this._getProfileData(this.profileId, this.employeeId);
+    this.getProfileData(this.profileId, this.employeeId);
   }
 
-  private _getProfileData(profileId: string, employeeId: string): void {
+  private getProfileData(profileId: string, employeeId: string): void {
     this.profileDataService.getDataById(profileId, employeeId).subscribe(userInfoResult => {
         this.userInfo.profile.init(
           userInfoResult.profile.id,

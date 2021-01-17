@@ -1,7 +1,7 @@
 ﻿using ICS.Domain.Data.Adapters;
 using ICS.Domain.Data.Repositories.Contracts;
 using ICS.Domain.Entities;
-using ICS.Domain.Services.Contracts;
+using ICS.Domain.Models;
 using ICS.Shared;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,31 +10,38 @@ using System.Threading.Tasks;
 
 namespace ICS.Domain.Data.Repositories
 {
-    /// <summary>
-    /// Репозиторий иностранцев
-    /// </summary>
-    public sealed class AlienRepository : IAlienRepository
+	/// <summary>
+	/// Репозиторий иностранцев
+	/// </summary>
+	public sealed class AlienRepository : IAlienRepository
     {
-        private readonly IIdGenerator _idGenerator;
+        private readonly IContactRepository _contactRepository;
+        private readonly IPassportRepository _passportRepository;
+        private readonly IOrganizationRepository _organizationRepository;
+        private readonly IStateRegistrationRepository _stateRegistrationRepository;
         private readonly DomainContext _domainContext;
 
-        public AlienRepository(
-            IIdGenerator idGenerator,
-            DomainContext databaseContext)
-        {
-            _idGenerator = idGenerator ?? throw new ArgumentNullException(nameof(idGenerator));
-            _domainContext = databaseContext ?? throw new ArgumentNullException(nameof(databaseContext));
-        }
+		public AlienRepository(
+			IContactRepository contactRepository,
+			IPassportRepository passportRepository,
+			IOrganizationRepository organizationRepository,
+			IStateRegistrationRepository stateRegistrationRepository,
+            DomainContext domainContext)
+		{
+			_contactRepository = contactRepository;
+			_passportRepository = passportRepository;
+			_organizationRepository = organizationRepository;
+			_stateRegistrationRepository = stateRegistrationRepository;
+			_domainContext = domainContext;
+		}
 
         /// <summary>
         /// Получить всех иностранцев
         /// </summary>
         /// <returns>Иностранцы</returns>
-        public async Task<IEnumerable<Alien>> GetAllAsync()
+        public Task<List<Alien>> GetAllAsync()
         {
-            var aliens = await _domainContext.Set<Alien>().ToArrayAsync().ConfigureAwait(false);
-
-            return aliens;
+            return _domainContext.Aliens.ToListAsync();
         }
 
         /// <summary>
@@ -44,10 +51,7 @@ namespace ICS.Domain.Data.Repositories
         /// <returns>Иностранец</returns>
         public async Task<Alien> GetAsync(Guid id)
         {
-            Contract.Argument.IsNotEmptyGuid(id, nameof(id));
-
-            var alien = await _domainContext.Set<Alien>().FindAsync(id).ConfigureAwait(false);
-
+            var alien = await _domainContext.Aliens.FindAsync(id);
             if (alien == null)
             {
                 throw new Exception($"Сущность не найдена для id: {id}");
@@ -68,45 +72,54 @@ namespace ICS.Domain.Data.Repositories
         /// <param name="workAddress">Рабочий адрес</param>
         /// <param name="stayAddress">Адрес пребывания</param>
         /// <returns>Идентификатор иностранца</returns>
-        public Alien Create(
-            Guid contactId,
-            Guid passportId,
-            Guid invitationId,
-            Guid organizationId,
-            Guid stateRegistrationId,
-            string position,
-            string workPlace,
-            string workAddress,
-            string stayAddress)
+        public Alien Create()
         {
-            Contract.Argument.IsNotEmptyGuid(contactId, nameof(contactId));
-            Contract.Argument.IsNotEmptyGuid(passportId, nameof(passportId));
-            Contract.Argument.IsNotEmptyGuid(invitationId, nameof(invitationId));
-            Contract.Argument.IsNotEmptyGuid(organizationId, nameof(organizationId));
-            Contract.Argument.IsNotEmptyGuid(stateRegistrationId, nameof(stateRegistrationId));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(position, nameof(position));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(workPlace, nameof(workPlace));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(workAddress, nameof(workAddress));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(stayAddress, nameof(stayAddress));
+            var createdAlien = new Alien();
 
-            var createdAlien = _domainContext.Set<Alien>().CreateProxy();
+            _domainContext.Aliens.Add(createdAlien);
 
-            var id = _idGenerator.Generate();
-            createdAlien.Initialize(
-                id: id,
-                contactId: contactId,
-                passportId: passportId,
-                invitationId: invitationId,
-                organizationId: organizationId,
-                stateRegistrationId: stateRegistrationId,
-                position: position,
-                workPlace: workPlace,
-                workAddress: workAddress,
-                stayAddress: stayAddress);
+            return createdAlien;
+        }
 
-            var newAlien =_domainContext.Set<Alien>().Add(createdAlien);
+        /// <summary>
+        /// Добавить иностранца
+        /// </summary>
+        /// <param name="addedAlien">DTO добавляемого иностранца</param>
+        public Alien Add(InviteeDto addedAlien)
+        {
+            var newAlien = Create();
 
-            return newAlien.Entity;
+            if (addedAlien.AlienContact != null)
+            {
+                var contact = _contactRepository.Add(addedAlien.AlienContact);
+                newAlien.SetContact(contact: contact);
+            }
+
+            if (addedAlien.AlienPassport != null)
+            {
+                var passport = _passportRepository.Add(addedAlien.AlienPassport);
+                newAlien.SetPassport(passport: passport);
+            }
+
+            if (addedAlien.AlienOrganization != null)
+            {
+                var organization = _organizationRepository.Add(addedAlien.AlienOrganization);
+                newAlien.SetOrganization(organization: organization);
+            }
+
+            if (addedAlien.AlienStateRegistration != null)
+            {
+                var stateRegistration = _stateRegistrationRepository.Add(addedAlien.AlienStateRegistration);
+                newAlien.SetStateRegistration(stateRegistration: stateRegistration);
+            }
+
+            if (addedAlien.AlienJob != null)
+            {
+                newAlien.SetWorkPlace(addedAlien.AlienJob.WorkPlace);
+                newAlien.SetPosition(addedAlien.AlienJob.Position);
+            }
+
+            return newAlien;
         }
 
         /// <summary>
@@ -118,9 +131,9 @@ namespace ICS.Domain.Data.Repositories
         {
             Contract.Argument.IsNotEmptyGuid(id, nameof(id));
 
-            var deletedAlien = await GetAsync(id).ConfigureAwait(false);
+            var deletedAlien = await GetAsync(id);
 
-            _domainContext.Set<Alien>().Remove(deletedAlien);
+            _domainContext.Aliens.Remove(deletedAlien);
         }
     }
 }

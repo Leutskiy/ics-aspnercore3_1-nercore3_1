@@ -25,16 +25,8 @@ namespace ICS.Domain.Configurations
                 .HasColumnName("Uid")
                 .ValueGeneratedNever();
 
-            builder.Property(profile => profile.OrdinalNumber).HasColumnName("OrdinalNumber");
-            builder.Property(profile => profile.UserId).HasColumnName("UserUid");
-            builder.Property(profile => profile.Photo).HasColumnName("Avatar");
-            builder.Property(profile => profile.WebPages).HasColumnName("WebPages");
-
-            builder
-                .HasOne(profile => profile.User)
-                .WithOne(user => user.Profile)
-                .HasForeignKey<Profile>(profile => profile.UserId)
-                .HasPrincipalKey<User>(user => user.Id);
+            builder.Property(profile => profile.Photo).IsRequired(false).HasColumnName("Avatar");
+            builder.Property(profile => profile.WebPages).IsRequired(false).HasColumnName("WebPages");
         }
     }
 }

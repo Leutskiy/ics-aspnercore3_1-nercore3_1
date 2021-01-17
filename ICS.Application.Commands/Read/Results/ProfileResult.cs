@@ -13,18 +13,13 @@ namespace ICS.WebApplication.Commands.Read.Results
         public Guid Id { get; set; }
 
         /// <summary>
-        /// Идентификатор пользователя
-        /// </summary>
-        public Guid UserId { get; set; }
-
-        /// <summary>
         /// Аватарка
         /// </summary>
-        public byte[] Avatar { get; set; }
+        public byte[]? Avatar { get; set; }
 
         /// <summary>
         /// Web-страницы
         /// </summary>
-        public string WebPages { get; set; }
+        public string? WebPages { get; set; }
     }
 }

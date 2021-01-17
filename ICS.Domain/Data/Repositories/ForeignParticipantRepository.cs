@@ -1,7 +1,7 @@
 ﻿using ICS.Domain.Data.Adapters;
 using ICS.Domain.Data.Repositories.Contracts;
 using ICS.Domain.Entities;
-using ICS.Domain.Services.Contracts;
+using ICS.Domain.Models;
 using ICS.Shared;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,31 +10,27 @@ using System.Threading.Tasks;
 
 namespace ICS.Domain.Data.Repositories
 {
-    /// <summary>
-    /// Репозиторий иностранных участников
-    /// </summary>
-    public sealed class ForeignParticipantRepository : IForeignParticipantRepository
+	/// <summary>
+	/// Репозиторий иностранных участников
+	/// </summary>
+	public sealed class ForeignParticipantRepository : IForeignParticipantRepository
     {
-        private readonly IIdGenerator _idGenerator;
-        private readonly DomainContext _context;
+        private readonly IPassportRepository _passportRepository;
+        private readonly DomainContext _domainContext;
 
-        public ForeignParticipantRepository(
-            IIdGenerator idGenerator,
-            DomainContext databaseContext)
+		public ForeignParticipantRepository(IPassportRepository passportRepository, DomainContext domainContext)
+		{
+			_passportRepository = passportRepository;
+			_domainContext = domainContext;
+		}
+
+		/// <summary>
+		/// Получить всех иностранных участников
+		/// </summary>
+		/// <returns>Иностранные участники</returns>
+		public Task<List<ForeignParticipant>> GetAllAsync()
         {
-            _idGenerator = idGenerator ?? throw new ArgumentNullException(nameof(idGenerator));
-            _context = databaseContext ?? throw new ArgumentNullException(nameof(databaseContext));
-        }
-
-        /// <summary>
-        /// Получить всех иностранных участников
-        /// </summary>
-        /// <returns>Иностранные участники</returns>
-        public async Task<IEnumerable<ForeignParticipant>> GetAllAsync()
-        {
-            var foreignParticipants = await _context.Set<ForeignParticipant>().ToArrayAsync().ConfigureAwait(false);
-
-            return foreignParticipants;
+            return _domainContext.ForeignParticipants.ToListAsync();
         }
 
         /// <summary>
@@ -44,13 +40,9 @@ namespace ICS.Domain.Data.Repositories
         /// <returns>Иностранный участник</returns>
         public async Task<ForeignParticipant> GetAsync(Guid id)
         {
-            if (id == Guid.Empty)
-            {
-                throw new ArgumentException(nameof(id));
-            }
+            Contract.Argument.IsNotEmptyGuid(id, nameof(id));
 
-            var foreignParticipant = await _context.Set<ForeignParticipant>().FindAsync(id).ConfigureAwait(false);
-
+            var foreignParticipant = await _domainContext.ForeignParticipants.FindAsync(id);
             if (foreignParticipant == null)
             {
                 throw new Exception($"Сущность не найдена для id: {id}");
@@ -62,30 +54,14 @@ namespace ICS.Domain.Data.Repositories
         /// <summary>
         /// Создать иностранного участника
         /// </summary>
-        /// <param name="alienId">Идентификатор иностранца</param>
-        /// <param name="passportId">Паспорт</param>
         /// <returns>Идентификатор инстранного участника</returns>
-        public ForeignParticipant Create(
-            Guid alienId,
-            Guid passportId,
-            Guid invitationId)
+        public ForeignParticipant Create()
         {
-            Contract.Argument.IsNotEmptyGuid(alienId, nameof(alienId));
-            Contract.Argument.IsNotEmptyGuid(passportId, nameof(passportId));
-            Contract.Argument.IsNotEmptyGuid(invitationId, nameof(invitationId));
+            var createdForeignParticipant = new ForeignParticipant();
 
-            var createdForeignParticipant = _context.Set<ForeignParticipant>().CreateProxy();
+            _domainContext.ForeignParticipants.Add(createdForeignParticipant);
 
-            var id = _idGenerator.Generate();
-            createdForeignParticipant.Initialize(
-                id: id,
-                alienId: alienId,
-                passportId: passportId,
-                invitationId: invitationId);
-
-            var newForeignParticipant = _context.Set<ForeignParticipant>().Add(createdForeignParticipant);
-
-            return newForeignParticipant.Entity;
+            return createdForeignParticipant;
         }
 
         /// <summary>
@@ -95,20 +71,33 @@ namespace ICS.Domain.Data.Repositories
         /// <returns></returns>
         public async Task DeleteAsync(Guid id)
         {
-            if (id == Guid.Empty)
-            {
-                throw new ArgumentException(nameof(id));
-            }
+            Contract.Argument.IsNotEmptyGuid(id, nameof(id));
 
-            var deletedForeignParticipant = await _context.Set<ForeignParticipant>()
-                .FirstOrDefaultAsync(foreignParticipantItem => foreignParticipantItem.Id == id).ConfigureAwait(false);
-
+            var deletedForeignParticipant = await _domainContext.ForeignParticipants.FirstOrDefaultAsync(foreignParticipantItem => foreignParticipantItem.Id == id);
             if (deletedForeignParticipant == null)
             {
                 throw new Exception($"Сущность не найдена для id: {id}");
             }
 
-            _context.Set<ForeignParticipant>().Remove(deletedForeignParticipant);
+            _domainContext.ForeignParticipants.Remove(deletedForeignParticipant);
+        }
+
+        /// <summary>
+        /// Добавить иностранного участника
+        /// </summary>
+        /// <param name="addedForeignParticipant">DTO добавляемого иностранного участника</param>
+        /// <returns>Иностранный участник</returns>
+        public ForeignParticipant Add(ForeignParticipantDto addedForeignParticipant)
+        {
+            var foreignParticipant = Create();
+
+            if (addedForeignParticipant.Passport != null)
+			{
+                var foreignParticipantPassport = _passportRepository.Add(addedPassport: addedForeignParticipant.Passport);
+                foreignParticipant.SetPassport(foreignParticipantPassport);
+            }
+
+            return foreignParticipant;
         }
     }
 }

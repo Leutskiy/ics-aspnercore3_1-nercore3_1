@@ -9,11 +9,11 @@
         /// <summary>
         /// Аватар
         /// </summary>
-        public string Avatar { get; set; }
+        public string? Avatar { get; set; }
 
         /// <summary>
         /// Веб-страницы
         /// </summary>
-        public string WebPages { get; set; }
+        public string? WebPages { get; set; }
     }
 }

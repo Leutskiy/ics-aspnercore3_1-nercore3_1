@@ -15,17 +15,13 @@ namespace ICS.WebApplication.Commands.Read
     public sealed class ForeignParticipantReadCommand : IReadCommand<ForeignParticipantResult>
     {
         private readonly IForeignParticipantRepository _foreignParticipantRepository;
-        private readonly IReadCommand<PassportResult> _passportReadCommand;
 
         public ForeignParticipantReadCommand(
-            IForeignParticipantRepository foreignParticipantRepository,
-            IReadCommand<PassportResult> passportReadCommand)
+            IForeignParticipantRepository foreignParticipantRepository)
         {
             Contract.Argument.IsNotNull(foreignParticipantRepository, nameof(foreignParticipantRepository));
-            Contract.Argument.IsNotNull(passportReadCommand, nameof(passportReadCommand));
 
             _foreignParticipantRepository = foreignParticipantRepository;
-            _passportReadCommand = passportReadCommand;
         }
 
         /// <summary>
@@ -40,7 +36,7 @@ namespace ICS.WebApplication.Commands.Read
             var foreignParticipantDtos = new List<ForeignParticipantResult>();
             foreach (var foreignParticipantId in foreignParticipantIds)
             {
-                var foreignParticipantDto = await ExecuteAsync(foreignParticipantId).ConfigureAwait(false);
+                var foreignParticipantDto = await ExecuteAsync(foreignParticipantId);
 
                 foreignParticipantDtos.Add(foreignParticipantDto);
             }
@@ -57,12 +53,9 @@ namespace ICS.WebApplication.Commands.Read
         {
             Contract.Argument.IsNotEmptyGuid(foreignParticipantId, nameof(foreignParticipantId));
 
-            var foreignParticipant = await _foreignParticipantRepository.GetAsync(foreignParticipantId).ConfigureAwait(false);
-            var passportResult = await _passportReadCommand.ExecuteAsync(foreignParticipant.PassportId).ConfigureAwait(false);
+            var foreignParticipant = await _foreignParticipantRepository.GetAsync(foreignParticipantId);
 
-            return DomainEntityConverter.ConvertToResult(
-                foreignParticipant: foreignParticipant,
-                passportResult: passportResult);
+            return DomainEntityConverter.ConvertToResult(foreignParticipant: foreignParticipant);
         }
 
         public Task<IEnumerable<ForeignParticipantResult>> ExecuteAsync()

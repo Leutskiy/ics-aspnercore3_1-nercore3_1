@@ -22,20 +22,13 @@ namespace ICS.WebApp.Controllers
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly EmployeeWriteCommand _employeeWriteCommand;
-        private readonly IReadCommand<EmployeeResult> _employeeReadCommand;
 
         public PassportController(
             IEmployeeRepository employeeRepository,
-            EmployeeWriteCommand employeeWriteCommand,
-            IReadCommand<EmployeeResult> employeeReadCommand)
+            EmployeeWriteCommand employeeWriteCommand)
         {
-            Contract.Argument.IsNotNull(employeeRepository, nameof(employeeRepository));
-            Contract.Argument.IsNotNull(employeeWriteCommand, nameof(employeeWriteCommand));
-            Contract.Argument.IsNotNull(employeeReadCommand, nameof(employeeReadCommand));
-
             _employeeRepository = employeeRepository;
             _employeeWriteCommand = employeeWriteCommand;
-            _employeeReadCommand = employeeReadCommand;
         }
 
         [HttpPost]
@@ -44,15 +37,15 @@ namespace ICS.WebApp.Controllers
         {
             Contract.Argument.IsNotNull(createdPassportData, nameof(createdPassportData));
 
-            var employeeId = await GetEmployeeIdAsync().ConfigureAwait(false);
-            return await _employeeWriteCommand.AddOrUpdatePassportAsync(employeeId, createdPassportData).ConfigureAwait(false);
+            var employeeId = await GetEmployeeIdAsync();
+            return await _employeeWriteCommand.AddOrUpdatePassportAsync(employeeId, createdPassportData);
         }
 
         private async Task<Guid> GetEmployeeIdAsync()
         {
             var identityClaims = (ClaimsIdentity)User.Identity;
             var userId = Guid.Parse(identityClaims.FindFirst("UserId").Value);
-            var employee = await _employeeRepository.GetByUserIdAsync(userId).ConfigureAwait(false);
+            var employee = await _employeeRepository.GetByUserIdAsync(userId);
 
             return employee.Id;
         }

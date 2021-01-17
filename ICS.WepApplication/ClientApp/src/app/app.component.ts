@@ -7,5 +7,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent   {
 
-  constructor() {}
+  title: string = 'ics-app';
+
+  constructor() { }
 }

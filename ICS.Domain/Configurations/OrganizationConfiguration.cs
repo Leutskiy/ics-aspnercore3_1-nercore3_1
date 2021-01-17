@@ -25,11 +25,17 @@ namespace ICS.Domain.Configurations
                 .HasColumnName("Uid")
                 .ValueGeneratedNever();
 
-            builder.Property(organization => organization.StateRegistrationId).HasColumnName("StateRegistrationUid");
-            builder.Property(organization => organization.Name).HasColumnName("Name");
-            builder.Property(organization => organization.ShortName).HasColumnName("ShortName");
-            builder.Property(organization => organization.LegalAddress).HasColumnName("LegalAddress");
-            builder.Property(organization => organization.ScientificActivity).HasColumnName("ScientificActivity");
+            builder.Property(organization => organization.StateRegistrationId).IsRequired(false).HasColumnName("StateRegistrationUid");
+            builder.Property(organization => organization.Name).IsRequired(false).HasColumnName("Name");
+            builder.Property(organization => organization.ShortName).IsRequired(false).HasColumnName("ShortName");
+            builder.Property(organization => organization.LegalAddress).IsRequired(false).HasColumnName("LegalAddress");
+            builder.Property(organization => organization.ScientificActivity).IsRequired(false).HasColumnName("ScientificActivity");
+
+            builder
+                .HasOne(organization => organization.StateRegistration)
+                .WithOne()
+                .HasForeignKey<Organization>(organization => organization.StateRegistrationId)
+                .HasPrincipalKey<StateRegistration>(stateRegistration => stateRegistration.Id);
         }
     }
 }

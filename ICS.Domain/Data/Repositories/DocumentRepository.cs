@@ -2,8 +2,6 @@
 using ICS.Domain.Entities;
 using ICS.Domain.Enums;
 using ICS.Domain.Repositories.Contracts;
-using ICS.Domain.Services.Contracts;
-using ICS.Shared;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,19 +9,15 @@ using System.Threading.Tasks;
 
 namespace ICS.Domain.Repositories
 {
-    /// <summary>
-    /// Репозиторий документов
-    /// </summary>
-    public sealed class DocumentRepository : IDocumentRepository
+	/// <summary>
+	/// Репозиторий документов
+	/// </summary>
+	public sealed class DocumentRepository : IDocumentRepository
     {
-        private readonly IIdGenerator _idGenerator;
         private readonly DomainContext _context;
 
-        public DocumentRepository(
-            IIdGenerator idGenerator,
-            DomainContext databaseContext)
+        public DocumentRepository(DomainContext databaseContext)
         {
-            _idGenerator = idGenerator ?? throw new ArgumentNullException(nameof(idGenerator));
             _context = databaseContext ?? throw new ArgumentNullException(nameof(databaseContext));
         }
 
@@ -31,11 +25,9 @@ namespace ICS.Domain.Repositories
         /// Получить все документы
         /// </summary>
         /// <returns>Документы</returns>
-        public async Task<IEnumerable<Document>> GetAllAsync()
+        public Task<List<Document>> GetAllAsync()
         {
-            var documents = await _context.Set<Document>().ToArrayAsync().ConfigureAwait(false);
-
-            return documents;
+            return _context.Set<Document>().ToListAsync();
         }
 
         /// <summary>
@@ -45,9 +37,7 @@ namespace ICS.Domain.Repositories
         /// <returns>Документ</returns>
         public async Task<Document> GetAsync(Guid id)
         {
-            Contract.Argument.IsNotEmptyGuid(id, nameof(id));
-
-            var document = await _context.Set<Document>().FindAsync(id).ConfigureAwait(false);
+            var document = await _context.Set<Document>().FindAsync(id);
 
             if (document == null)
             {
@@ -60,7 +50,7 @@ namespace ICS.Domain.Repositories
         /// <summary>
         /// Создать документ
         /// </summary>
-        /// <param name="invitationId">Идентификатор приглашения</param>
+        /// <param name="invitation">TODO</param>
         /// <param name="name">Название</param>
         /// <param name="content">Содержимое</param>
         /// <param name="createdDate">Дата создания</param>
@@ -68,32 +58,20 @@ namespace ICS.Domain.Repositories
         /// <param name="documentType">Тип документа</param>
         /// <returns>Идентификатор документа</returns>
         public Guid Create(
-            Guid invitationId,
+            Invitation invitation,
             string name,
             byte[] content,
-            DateTime createdDate,
-            DateTime updateDate,
             DocumentType documentType)
         {
-            Contract.Argument.IsNotEmptyGuid(invitationId, nameof(invitationId));
-            Contract.Argument.IsNotNullOrEmptyOrWhiteSpace(name, nameof(name));
-            Contract.Argument.IsNotNull(content, nameof(content));
-            Contract.Argument.IsValidIf(createdDate <= updateDate, $"{nameof(createdDate)}:{createdDate} < {nameof(updateDate)}:{updateDate}");
-
-            var createdDocument = _context.Set<Document>().CreateProxy();
-            var id = _idGenerator.Generate();
-            createdDocument.Initialize(
-                id: id,
-                invitationId: invitationId,
+            var createdDocument = new Document(
+                invitation: invitation,
                 name: name,
                 content: content,
-                createdDate: createdDate,
-                updateDate: updateDate,
                 documentType: documentType);
 
-            var newDocument = _context.Set<Document>().Add(createdDocument);
+            _context.Set<Document>().Add(createdDocument);
 
-            return newDocument.Entity.Id;
+            return createdDocument.Id;
         }
 
         /// <summary>
@@ -109,7 +87,7 @@ namespace ICS.Domain.Repositories
             }
 
             var deletedDocument = await _context.Set<Document>()
-                .FirstOrDefaultAsync(documentItem => documentItem.Id == id).ConfigureAwait(false);
+                .FirstOrDefaultAsync(documentItem => documentItem.Id == id);
 
             if (deletedDocument == null)
             {

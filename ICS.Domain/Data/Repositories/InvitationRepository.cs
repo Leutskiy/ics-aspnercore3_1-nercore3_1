@@ -1,7 +1,7 @@
 ﻿using ICS.Domain.Data.Adapters;
 using ICS.Domain.Data.Repositories.Contracts;
 using ICS.Domain.Entities;
-using ICS.Domain.Enums;
+using ICS.Domain.Models;
 using ICS.Domain.Services.Contracts;
 using ICS.Shared;
 using Microsoft.EntityFrameworkCore;
@@ -11,33 +11,38 @@ using System.Threading.Tasks;
 
 namespace ICS.Domain.Data.Repositories
 {
-    /// <summary>
-    /// Репозиторий приглашений
-    /// </summary>
-    public sealed class InvitationRepository : IInvitationRepository
+	/// <summary>
+	/// Репозиторий приглашений
+	/// </summary>
+	public sealed class InvitationRepository : IInvitationRepository
     {
-        private readonly IIdGenerator _idGenerator;
-        private readonly DomainContext _context;
+        private readonly IAlienRepository _alienRepository;
+        private readonly IVisitDetailRepository _visitDetailRepository;
+        private readonly IForeignParticipantRepository _foreignParticipantRepository;
+        private readonly DomainContext _domainContext;
 
         public InvitationRepository(
-            IIdGenerator idGenerator,
-            DomainContext databaseContext)
+            IAlienRepository alienRepository,
+            IVisitDetailRepository visitDetailRepository,
+            IForeignParticipantRepository foreignParticipantRepository,
+            DomainContext domainContext)
         {
-            _idGenerator = idGenerator ?? throw new ArgumentNullException(nameof(idGenerator));
-            _context = databaseContext ?? throw new ArgumentNullException(nameof(databaseContext));
+            _alienRepository = alienRepository;
+            _visitDetailRepository = visitDetailRepository;
+            _foreignParticipantRepository = foreignParticipantRepository;
+            _domainContext = domainContext;
         }
 
         /// <summary>
         /// Получить все приглашения
         /// </summary>
         /// <returns>Приглашения</returns>
-        public async Task<IEnumerable<Invitation>> GetAllAsync()
+        public Task<List<Invitation>> GetAllAsync(Guid employeeId)
         {
-            var invitations = await _context.Set<Invitation>().ToArrayAsync().ConfigureAwait(false);
-
-            return invitations;
+            return _domainContext.Invitations.ToListAsync();
         }
 
+        // TODO: добавить метод, который будет получать пути для вытаскивания через include
         /// <summary>
         /// Получить приглашение по идентификатору
         /// </summary>
@@ -45,10 +50,7 @@ namespace ICS.Domain.Data.Repositories
         /// <returns>Приглашение</returns>
         public async Task<Invitation> GetAsync(Guid id)
         {
-            Contract.Argument.IsNotEmptyGuid(id, nameof(id));
-
-            var invitation = await _context.Set<Invitation>().FindAsync(id).ConfigureAwait(false);
-
+            var invitation = await _domainContext.Invitations/*.Include(inv => inv.Alien)*/.FirstOrDefaultAsync(inv => inv.Id == id);
             if (invitation == null)
             {
                 throw new Exception($"Сущность не найдена для id: {id}");
@@ -68,37 +70,13 @@ namespace ICS.Domain.Data.Repositories
         /// <param name="updateDate">Дата изменения</param>
         /// <param name="invitationStatus">Статус приглашения</param>
         /// <returns>Идентификатор приглашения</returns>
-        public Invitation Create(
-            Guid alienId,
-            Guid employeeId,
-            Guid visitDetailId,
-            ICollection<ForeignParticipant> foreignParticipants,
-            DateTimeOffset createdDate,
-            DateTimeOffset updateDate,
-            InvitationStatus invitationStatus)
+        public Invitation Create(Alien alien, Employee employee)
         {
-            Contract.Argument.IsNotEmptyGuid(alienId, nameof(alienId));
-            Contract.Argument.IsNotEmptyGuid(employeeId, nameof(employeeId));
-            Contract.Argument.IsNotEmptyGuid(visitDetailId, nameof(visitDetailId));
-            Contract.Argument.IsNotNull(foreignParticipants, nameof(foreignParticipants));
-            Contract.Argument.IsValidIf(createdDate <= updateDate, $"{nameof(createdDate)}:{createdDate} < {nameof(updateDate)}:{updateDate}");
+            var createdInvitation = new Invitation(alien: alien, employee: employee);
 
-            var createdInvitation = _context.Set<Invitation>().CreateProxy();
+            _domainContext.Invitations.Add(createdInvitation);
 
-            var id = _idGenerator.Generate();
-            createdInvitation.Initialize(
-                id: id,
-                alienId: alienId, 
-                employeeId: employeeId,
-                visitDetailId: visitDetailId,
-                foreignParticipants: foreignParticipants,
-                createdDate: createdDate,
-                updateDate: updateDate,
-                invitationStatus: invitationStatus);
-
-            var newInvitation = _context.Set<Invitation>().Add(createdInvitation);
-
-            return newInvitation.Entity;
+            return createdInvitation;
         }
 
         /// <summary>
@@ -110,9 +88,49 @@ namespace ICS.Domain.Data.Repositories
         {
             Contract.Argument.IsNotEmptyGuid(id, nameof(id));
 
-            var deletedInvitation = await GetAsync(id).ConfigureAwait(false);
+            var deletedInvitation = await GetAsync(id);
 
-            _context.Set<Invitation>().Remove(deletedInvitation);
+            _domainContext.Invitations.Remove(deletedInvitation);
         }
-    }
+
+        /// <summary>
+        /// Добавить приглашение
+        /// </summary>
+        /// <param name="employee">Сотрудник, который организует приглашение</param>
+        /// <param name="addedInvitation">Новое приглашение</param>
+        /// <returns></returns>
+        public Invitation Add(Employee employee, InvitationDto addedInvitation)
+        {
+            // TODO: сейчас приглашаемый иностранец всегда должен быть задан при создании приглашения
+            var alien = _alienRepository.Add(addedInvitation.Alien);
+            var invitation = Create(alien: alien, employee: employee);
+
+            // TODO: сейчас сопровождающие инстранца могут быть не заданы при создании приглашения
+            if (addedInvitation.ForeignParticipants != null)
+            {
+                var foreignParticipants = new List<ForeignParticipant>();
+                foreach (var foreignParticipantDto in addedInvitation.ForeignParticipants)
+                {
+                    var foreignParticipant = _foreignParticipantRepository.Add(foreignParticipantDto);
+                    foreignParticipants.Add(foreignParticipant);
+                }
+
+                invitation.SetForeignParticipants(foreignParticipants);
+            }
+
+            // TODO: сейчас детали визита могут быть не заданы при создании приглашения
+            if (addedInvitation.VisitDetail != null)
+            {
+                var visitDetail = _visitDetailRepository.Add(addedInvitation.VisitDetail);
+                invitation.SetVisitDetail(visitDetail);
+            }
+
+            return invitation;
+        }
+
+		public Task<List<Invitation>> GetAllAsync()
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

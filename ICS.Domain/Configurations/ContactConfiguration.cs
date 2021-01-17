@@ -25,11 +25,11 @@ namespace ICS.Domain.Configurations
                 .HasColumnName("Uid")
                 .ValueGeneratedNever();
 
-            builder.Property(contact => contact.Email).HasColumnName("Email");
-            builder.Property(contact => contact.Postcode).HasColumnName("Postcode");
-            builder.Property(contact => contact.HomePhoneNumber).HasColumnName("HomePhoneNumber");
-            builder.Property(contact => contact.WorkPhoneNumber).HasColumnName("WorkPhoneNumber");
-            builder.Property(contact => contact.MobilePhoneNumber).HasColumnName("MobilePhoneNumber");
+            builder.Property(contact => contact.Email).IsRequired(false).HasColumnName("Email");
+            builder.Property(contact => contact.Postcode).IsRequired(false).HasColumnName("Postcode");
+            builder.Property(contact => contact.HomePhoneNumber).IsRequired(false).HasColumnName("HomePhoneNumber");
+            builder.Property(contact => contact.WorkPhoneNumber).IsRequired(false).HasColumnName("WorkPhoneNumber");
+            builder.Property(contact => contact.MobilePhoneNumber).IsRequired(false).HasColumnName("MobilePhoneNumber");
         }
     }
 }

@@ -7,9 +7,12 @@ namespace ICS.Domain.Data.Repositories.Contracts
 {
     public interface IProfileRepository
     {
-        Task<Profile> CreateAsync(User user);
+        Profile Create();
+
         Task<Profile> GetAsync(Guid id);
-        Task<Profile> GetByOrdinalNumberAsync(long ordinalNumber);
+
+        Task<Profile[]> GetAllAsync();
+
         Task UpdateAsync(Guid profileId, ProfileDto newProfileData);
     }
 }

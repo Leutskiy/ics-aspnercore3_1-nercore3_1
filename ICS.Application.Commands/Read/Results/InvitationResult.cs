@@ -16,21 +16,21 @@ namespace ICS.WebApplication.Commands.Read.Results
         /// <summary>
         /// Данные по иностранцу
         /// </summary>
-        public AlienResult Alien { get; set; }
+        public AlienResult? Alien { get; set; }
 
         /// <summary>
         /// Данные по сотруднику
         /// </summary>
-        public EmployeeResult Employee { get; set; }
+        public EmployeeResult? Employee { get; set; }
 
         /// <summary>
         /// Данные по деталям визита
         /// </summary>
-        public VisitDetailResult VisitDetail { get; set; }
+        public VisitDetailResult? VisitDetail { get; set; }
 
         /// <summary>
         /// Данные по иностранному сопровождению
         /// </summary>
-        public IEnumerable<ForeignParticipantResult> ForeignParticipants { get; set; }
+        public IEnumerable<ForeignParticipantResult>? ForeignParticipants { get; set; }
     }
 }
